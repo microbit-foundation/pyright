@@ -104,6 +104,10 @@ export class PyrightServer extends LanguageServerBase {
                 workspace.serviceInstance.invalidateAndForceReanalysis();
             });
         });
+        this._connection.onRequest('pyright/apidocs', (params: { path: string; modules: string[] }) => {
+            const service = this._workspaceMap.getWorkspaceForFile(this, params.path);
+            return service.serviceInstance.getApiDocs(params.modules);
+        });
     }
 
     protected override initialize(

@@ -54,24 +54,27 @@ import { IndexOptions, IndexResults, WorkspaceSymbolCallback } from '../language
 import { HoverResults } from '../languageService/hoverProvider';
 import { ReferenceCallback, ReferencesResult } from '../languageService/referencesProvider';
 import { SignatureHelpResults } from '../languageService/signatureHelpProvider';
+import { ParseNodeType } from '../parser/parseNodes';
 import { ParseResults } from '../parser/parser';
 import { ImportLookupResult } from './analyzerFileInfo';
 import * as AnalyzerNodeInfo from './analyzerNodeInfo';
 import { CircularDependency } from './circularDependency';
-import { ImportResolver } from './importResolver';
+import { AliasDeclaration, DeclarationType, VariableDeclaration } from './declaration';
+import { ImportedModuleDescriptor, ImportResolver } from './importResolver';
 import { ImportResult, ImportType } from './importResult';
+import { ModuleInfo } from './packageTypeReport';
 import { findNodeByOffset, getDocString } from './parseTreeUtils';
 import { Scope } from './scope';
 import { getScopeForNode } from './scopeUtils';
 import { SourceFile } from './sourceFile';
 import { SourceMapper } from './sourceMapper';
-import { Symbol } from './symbol';
+import { Symbol, SymbolTable } from './symbol';
 import { isPrivateOrProtectedName } from './symbolNameUtils';
 import { createTracePrinter } from './tracePrinter';
 import { TypeEvaluator } from './typeEvaluatorTypes';
 import { createTypeEvaluatorWithTracker } from './typeEvaluatorWithTracker';
 import { PrintTypeFlags } from './typePrinter';
-import { Type } from './types';
+import { ClassType, FunctionType, isClass, isFunction, isModule, Type } from './types';
 import { TypeStubWriter } from './typeStubWriter';
 
 const _maxImportDepth = 256;
@@ -1781,6 +1784,91 @@ export class Program {
         this._bindFile(sourceFileInfo);
 
         return sourceFileInfo.sourceFile.performQuickAction(command, args, token);
+    }
+
+    getApiDocs(modules: string[]) {
+        const result = Object.create(null);
+        for (const moduleName of modules) {
+            const moduleDescriptor: ImportedModuleDescriptor = {
+                leadingDots: 0,
+                nameParts: moduleName.split('.'),
+                importedSymbols: [],
+            };
+            const importResult = this._importResolver.resolveImport(
+                '',
+                this._configOptions.findExecEnvironment('.'),
+                moduleDescriptor
+            );
+            if (importResult.isImportFound) {
+                const modulePath = importResult.resolvedPaths[importResult.resolvedPaths.length - 1];
+                this.addTrackedFiles([modulePath], /* isThirdPartyImport */ true, /* isInPyTypedPackage */ false);
+                const sourceFile = this.getBoundSourceFile(modulePath);
+                if (sourceFile) {
+                    const parseTree = sourceFile.getParseResults()!.parseTree;
+                    const children: Record<string, any> = Object.create(null);
+                    const moduleResult = {
+                        kind: 'module',
+                        fullName: moduleName,
+                        docString: getDocString(parseTree.statements),
+                        children,
+                    };
+                    result[moduleName] = moduleResult;
+                    const moduleScope = getScopeForNode(parseTree)!;
+                    const recurseSymbolTables = (
+                        target: Record<string, any>,
+                        parents: string[],
+                        table: SymbolTable
+                    ) => {
+                        table.forEach((symbol, name) => {
+                            // There's every chance this is imperfect!
+                            if (!symbol.isExternallyHidden() && !symbol.isPrivateMember()) {
+                                const type = this.getTypeForSymbol(symbol);
+                                const decls = symbol.getDeclarations();
+                                const isDeclarationType = (type: DeclarationType) => decls.some((d) => d.type === type);
+                                if (isDeclarationType(DeclarationType.Class) && isClass(type)) {
+                                    target[name] = {
+                                        children: Object.create(null),
+                                        docString: type.details.docString,
+                                        fullName: type.details.fullName,
+                                        kind: 'class',
+                                        type: this.printType(type, false),
+                                    };
+                                    recurseSymbolTables(target[name].children, [...parents, name], type.details.fields);
+                                } else if (isDeclarationType(DeclarationType.Function) && isFunction(type)) {
+                                    target[name] = {
+                                        docString: type.details.docString,
+                                        fullName: type.details.fullName,
+                                        kind: 'function',
+                                        type: this.printType(type, false),
+                                    };
+                                } else if (isDeclarationType(DeclarationType.Variable)) {
+                                    const variable = decls.find(
+                                        (x) => x.type === DeclarationType.Variable
+                                    ) as VariableDeclaration;
+                                    target[name] = {
+                                        fullName: [...parents, name].join('.'),
+                                        kind: 'variable',
+                                        type: this.printType(type, false),
+                                        docString: variable.docString,
+                                    };
+                                } else if (isDeclarationType(DeclarationType.Alias) && isModule(type)) {
+                                    target[name] = {
+                                        children: Object.create(null),
+                                        docString: type.docString,
+                                        fullName: type.moduleName,
+                                        kind: 'module',
+                                    };
+                                    recurseSymbolTables(target[name].children, [...parents, name], type.fields);
+                                }
+                            }
+                        });
+                    };
+                    recurseSymbolTables(children, [moduleName], moduleScope.symbolTable);
+                }
+            }
+        }
+        this._removeUnneededFiles();
+        return result;
     }
 
     private _handleMemoryHighUsage() {
