@@ -74,7 +74,7 @@ import { createTracePrinter } from './tracePrinter';
 import { TypeEvaluator } from './typeEvaluatorTypes';
 import { createTypeEvaluatorWithTracker } from './typeEvaluatorWithTracker';
 import { PrintTypeFlags } from './typePrinter';
-import { ClassType, FunctionType, isClass, isFunction, isModule, Type } from './types';
+import { ClassType, FunctionType, isClass, isFunction, isModule, isOverloadedFunction, Type } from './types';
 import { TypeStubWriter } from './typeStubWriter';
 
 const _maxImportDepth = 256;
@@ -1805,20 +1805,15 @@ export class Program {
                 const sourceFile = this.getBoundSourceFile(modulePath);
                 if (sourceFile) {
                     const parseTree = sourceFile.getParseResults()!.parseTree;
-                    const children: Record<string, any> = Object.create(null);
                     const moduleResult = {
                         kind: 'module',
                         fullName: moduleName,
                         docString: getDocString(parseTree.statements),
-                        children,
+                        children: [],
                     };
                     result[moduleName] = moduleResult;
                     const moduleScope = getScopeForNode(parseTree)!;
-                    const recurseSymbolTables = (
-                        target: Record<string, any>,
-                        parents: string[],
-                        table: SymbolTable
-                    ) => {
+                    const recurseSymbolTables = (target: any[], parents: string[], table: SymbolTable) => {
                         table.forEach((symbol, name) => {
                             // There's every chance this is imperfect!
                             if (!symbol.isExternallyHidden() && !symbol.isPrivateMember()) {
@@ -1826,44 +1821,66 @@ export class Program {
                                 const decls = symbol.getDeclarations();
                                 const isDeclarationType = (type: DeclarationType) => decls.some((d) => d.type === type);
                                 if (isDeclarationType(DeclarationType.Class) && isClass(type)) {
-                                    target[name] = {
-                                        children: Object.create(null),
+                                    target.push({
+                                        name,
+                                        children: [],
                                         docString: type.details.docString,
                                         fullName: type.details.fullName,
                                         kind: 'class',
                                         type: this.printType(type, false),
-                                    };
-                                    recurseSymbolTables(target[name].children, [...parents, name], type.details.fields);
+                                    });
+                                    recurseSymbolTables(
+                                        target[target.length - 1].children,
+                                        [...parents, name],
+                                        type.details.fields
+                                    );
                                 } else if (isDeclarationType(DeclarationType.Function) && isFunction(type)) {
-                                    target[name] = {
+                                    target.push({
+                                        name,
                                         docString: type.details.docString,
                                         fullName: type.details.fullName,
                                         kind: 'function',
                                         type: this.printType(type, false),
-                                    };
+                                    });
+                                } else if (isDeclarationType(DeclarationType.Function) && isOverloadedFunction(type)) {
+                                    for (const overload of type.overloads) {
+                                        target.push({
+                                            name,
+                                            docString: overload.details.docString,
+                                            fullName: overload.details.fullName,
+                                            kind: 'function',
+                                            type: this.printType(overload, false),
+                                        });
+                                    }
                                 } else if (isDeclarationType(DeclarationType.Variable)) {
                                     const variable = decls.find(
                                         (x) => x.type === DeclarationType.Variable
                                     ) as VariableDeclaration;
-                                    target[name] = {
+                                    target.push({
+                                        name,
                                         fullName: [...parents, name].join('.'),
                                         kind: 'variable',
                                         type: this.printType(type, false),
                                         docString: variable.docString,
-                                    };
+                                    });
                                 } else if (isDeclarationType(DeclarationType.Alias) && isModule(type)) {
-                                    target[name] = {
-                                        children: Object.create(null),
+                                    target.push({
+                                        name,
+                                        children: [],
                                         docString: type.docString,
                                         fullName: type.moduleName,
                                         kind: 'module',
-                                    };
-                                    recurseSymbolTables(target[name].children, [...parents, name], type.fields);
+                                    });
+                                    recurseSymbolTables(
+                                        target[target.length - 1].children,
+                                        [...parents, name],
+                                        type.fields
+                                    );
                                 }
                             }
                         });
                     };
-                    recurseSymbolTables(children, [moduleName], moduleScope.symbolTable);
+                    recurseSymbolTables(moduleResult.children, [moduleName], moduleScope.symbolTable);
                 }
             }
         }
