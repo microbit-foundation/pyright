@@ -1830,6 +1830,10 @@ export class Program {
                                         fullName: type.details.fullName,
                                         kind: 'class',
                                         type: this.printType(type, false),
+                                        baseClasses: type.details.baseClasses.map((baseClass) => ({
+                                            name: (baseClass as ClassType).details.name,
+                                            fullName: (baseClass as ClassType).details.fullName,
+                                        })).filter(t => t.fullName !== "builtins.object"),
                                     });
                                     recurseSymbolTables(
                                         target[target.length - 1].children,
