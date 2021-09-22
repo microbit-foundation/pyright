@@ -1806,6 +1806,7 @@ export class Program {
                 if (sourceFile) {
                     const parseTree = sourceFile.getParseResults()!.parseTree;
                     const moduleResult = {
+                        id: moduleName,
                         kind: 'module',
                         fullName: moduleName,
                         docString: getDocString(parseTree.statements),
@@ -1822,6 +1823,7 @@ export class Program {
                                 const isDeclarationType = (type: DeclarationType) => decls.some((d) => d.type === type);
                                 if (isDeclarationType(DeclarationType.Class) && isClass(type)) {
                                     target.push({
+                                        id: symbol.id.toString(),
                                         name,
                                         children: [],
                                         docString: type.details.docString,
@@ -1836,6 +1838,7 @@ export class Program {
                                     );
                                 } else if (isDeclarationType(DeclarationType.Function) && isFunction(type)) {
                                     target.push({
+                                        id: symbol.id.toString(),
                                         name,
                                         docString: type.details.docString,
                                         fullName: type.details.fullName,
@@ -1843,8 +1846,10 @@ export class Program {
                                         type: this.printType(type, false),
                                     });
                                 } else if (isDeclarationType(DeclarationType.Function) && isOverloadedFunction(type)) {
+                                    let suffix = 1;
                                     for (const overload of type.overloads) {
                                         target.push({
+                                            id: `${symbol.id}-${suffix++}`,
                                             name,
                                             docString: overload.details.docString,
                                             fullName: overload.details.fullName,
@@ -1857,6 +1862,7 @@ export class Program {
                                         (x) => x.type === DeclarationType.Variable
                                     ) as VariableDeclaration;
                                     target.push({
+                                        id: symbol.id.toString(),
                                         name,
                                         fullName: [...parents, name].join('.'),
                                         kind: 'variable',
@@ -1865,6 +1871,7 @@ export class Program {
                                     });
                                 } else if (isDeclarationType(DeclarationType.Alias) && isModule(type)) {
                                     target.push({
+                                        id: symbol.id.toString(),
                                         name,
                                         children: [],
                                         docString: type.docString,
