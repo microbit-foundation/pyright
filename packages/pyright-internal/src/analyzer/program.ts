@@ -77,6 +77,7 @@ import { createTypeEvaluatorWithTracker } from './typeEvaluatorWithTracker';
 import { PrintTypeFlags } from './typePrinter';
 import { ClassType, FunctionType, isClass, isFunction, isModule, isOverloadedFunction, Type } from './types';
 import { TypeStubWriter } from './typeStubWriter';
+import { convertDocStringToMarkdown, convertDocStringToPlainText } from './docStringConversion';
 
 const _maxImportDepth = 256;
 
@@ -1787,7 +1788,25 @@ export class Program {
         return sourceFileInfo.sourceFile.performQuickAction(command, args, token);
     }
 
-    getApiDocs(modules: string[]): ApiDocsResponse {
+    getApiDocs(modules: string[], documentationFormat: MarkupKind[]): ApiDocsResponse {
+        const internalDocStringConversion: (docString: string) => string = [
+            ...documentationFormat,
+            MarkupKind.PlainText,
+        ]
+            .map((markupKind) => {
+                switch (markupKind) {
+                    case MarkupKind.Markdown:
+                        return convertDocStringToMarkdown;
+                    case MarkupKind.PlainText:
+                        return convertDocStringToPlainText;
+                    default:
+                        return undefined;
+                }
+            })
+            .filter(Boolean)[0]!;
+        const docStringConversion = (docString: string | undefined) =>
+            docString ? internalDocStringConversion(docString) : undefined;
+
         const result: ApiDocsResponse = Object.create(null);
         for (const moduleName of modules) {
             const moduleDescriptor: ImportedModuleDescriptor = {
@@ -1811,7 +1830,7 @@ export class Program {
                         name: moduleName,
                         kind: 'module',
                         fullName: moduleName,
-                        docString: getDocString(parseTree.statements),
+                        docString: docStringConversion(getDocString(parseTree.statements)),
                         children: [],
                     };
                     result[moduleName] = moduleResult;
@@ -1829,7 +1848,7 @@ export class Program {
                                         id: symbol.id.toString(),
                                         name,
                                         children: [],
-                                        docString: type.details.docString,
+                                        docString: docStringConversion(type.details.docString),
                                         fullName: type.details.fullName,
                                         kind: 'class',
                                         type: this.printType(type, false),
@@ -1849,7 +1868,7 @@ export class Program {
                                     target.push({
                                         id: symbol.id.toString(),
                                         name,
-                                        docString: type.details.docString,
+                                        docString: docStringConversion(type.details.docString),
                                         fullName: type.details.fullName,
                                         kind: 'function',
                                         type: this.printType(type, false),
@@ -1860,7 +1879,7 @@ export class Program {
                                         target.push({
                                             id: `${symbol.id}-${suffix++}`,
                                             name,
-                                            docString: overload.details.docString,
+                                            docString: docStringConversion(overload.details.docString),
                                             fullName: overload.details.fullName,
                                             kind: 'function',
                                             type: this.printType(overload, false),
@@ -1876,14 +1895,14 @@ export class Program {
                                         fullName: [...parents, name].join('.'),
                                         kind: 'variable',
                                         type: this.printType(type, false),
-                                        docString: variable.docString,
+                                        docString: docStringConversion(variable.docString),
                                     });
                                 } else if (isDeclarationType(DeclarationType.Alias) && isModule(type)) {
                                     target.push({
                                         id: symbol.id.toString(),
                                         name,
                                         children: [],
-                                        docString: type.docString,
+                                        docString: docStringConversion(type.docString),
                                         fullName: type.moduleName,
                                         kind: 'module',
                                     });

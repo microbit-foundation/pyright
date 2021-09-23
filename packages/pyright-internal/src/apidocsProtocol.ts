@@ -1,10 +1,11 @@
 // A custom extension to LSP.
 
-import { ProtocolRequestType } from 'vscode-languageserver-protocol';
+import { MarkupKind, ProtocolRequestType } from 'vscode-languageserver-protocol';
 
 export interface ApiDocsParams {
     modules: string[];
     path: string;
+    documentationFormat?: MarkupKind[];
 }
 
 export interface ApiDocsBaseClass {

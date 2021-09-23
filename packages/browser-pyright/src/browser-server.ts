@@ -38,6 +38,7 @@ import {
     InitializeParams,
     InitializeResult,
     WorkDoneProgressServerReporter,
+    MarkupKind,
 } from 'vscode-languageserver';
 import { apiDocsRequestType } from 'pyright-internal/apidocsProtocol';
 
@@ -107,7 +108,10 @@ export class PyrightServer extends LanguageServerBase {
         });
         this._connection.onRequest(apiDocsRequestType, (params) => {
             const service = this._workspaceMap.getWorkspaceForFile(this, params.path);
-            return service.serviceInstance.getApiDocs(params.modules);
+            return service.serviceInstance.getApiDocs(
+                params.modules,
+                params.documentationFormat ?? [MarkupKind.PlainText]
+            );
         });
     }
 
