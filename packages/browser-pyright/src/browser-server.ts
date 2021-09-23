@@ -39,6 +39,7 @@ import {
     InitializeResult,
     WorkDoneProgressServerReporter,
 } from 'vscode-languageserver';
+import { apiDocsRequestType } from 'pyright-internal/apidocsProtocol';
 
 const maxAnalysisTimeInForeground = { openFilesTimeInMs: 50, noOpenFilesTimeInMs: 200 };
 
@@ -104,7 +105,7 @@ export class PyrightServer extends LanguageServerBase {
                 workspace.serviceInstance.invalidateAndForceReanalysis();
             });
         });
-        this._connection.onRequest('pyright/apidocs', (params: { path: string; modules: string[] }) => {
+        this._connection.onRequest(apiDocsRequestType, (params) => {
             const service = this._workspaceMap.getWorkspaceForFile(this, params.path);
             return service.serviceInstance.getApiDocs(params.modules);
         });

@@ -41,6 +41,7 @@ import { convertPositionToOffset, convertRangeToTextRange } from '../common/posi
 import { computeCompletionSimilarity } from '../common/stringUtils';
 import { DocumentRange, doesRangeContain, doRangesIntersect, Position, Range } from '../common/textRange';
 import { Duration, timingStats } from '../common/timing';
+import { ApiDocsEntry, ApiDocsResponse } from '../apidocsProtocol';
 import {
     AutoImporter,
     AutoImportResult,
@@ -1786,8 +1787,8 @@ export class Program {
         return sourceFileInfo.sourceFile.performQuickAction(command, args, token);
     }
 
-    getApiDocs(modules: string[]) {
-        const result = Object.create(null);
+    getApiDocs(modules: string[]): ApiDocsResponse {
+        const result: ApiDocsResponse = Object.create(null);
         for (const moduleName of modules) {
             const moduleDescriptor: ImportedModuleDescriptor = {
                 leadingDots: 0,
@@ -1805,8 +1806,9 @@ export class Program {
                 const sourceFile = this.getBoundSourceFile(modulePath);
                 if (sourceFile) {
                     const parseTree = sourceFile.getParseResults()!.parseTree;
-                    const moduleResult = {
+                    const moduleResult: ApiDocsEntry = {
                         id: moduleName,
+                        name: moduleName,
                         kind: 'module',
                         fullName: moduleName,
                         docString: getDocString(parseTree.statements),
@@ -1816,7 +1818,8 @@ export class Program {
                     const moduleScope = getScopeForNode(parseTree)!;
                     const recurseSymbolTables = (target: any[], parents: string[], table: SymbolTable) => {
                         table.forEach((symbol, name) => {
-                            // There's every chance this is imperfect!
+                            // There's every chance this is imperfect. It's not clear-cut what counts
+                            // as public API. This is a good-enough implementation for our purposes.
                             if (!symbol.isExternallyHidden() && !symbol.isPrivateMember()) {
                                 const type = this.getTypeForSymbol(symbol);
                                 const decls = symbol.getDeclarations();
@@ -1830,10 +1833,12 @@ export class Program {
                                         fullName: type.details.fullName,
                                         kind: 'class',
                                         type: this.printType(type, false),
-                                        baseClasses: type.details.baseClasses.map((baseClass) => ({
-                                            name: (baseClass as ClassType).details.name,
-                                            fullName: (baseClass as ClassType).details.fullName,
-                                        })).filter(t => t.fullName !== "builtins.object"),
+                                        baseClasses: type.details.baseClasses
+                                            .map((baseClass) => ({
+                                                name: (baseClass as ClassType).details.name,
+                                                fullName: (baseClass as ClassType).details.fullName,
+                                            }))
+                                            .filter((t) => t.fullName !== 'builtins.object'),
                                     });
                                     recurseSymbolTables(
                                         target[target.length - 1].children,
@@ -1891,7 +1896,7 @@ export class Program {
                             }
                         });
                     };
-                    recurseSymbolTables(moduleResult.children, [moduleName], moduleScope.symbolTable);
+                    recurseSymbolTables(moduleResult.children!, [moduleName], moduleScope.symbolTable);
                 }
             }
         }
