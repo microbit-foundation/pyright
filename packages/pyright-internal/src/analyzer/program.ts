@@ -55,7 +55,7 @@ import { IndexOptions, IndexResults, WorkspaceSymbolCallback } from '../language
 import { HoverResults } from '../languageService/hoverProvider';
 import { ReferenceCallback, ReferencesResult } from '../languageService/referencesProvider';
 import { SignatureHelpResults } from '../languageService/signatureHelpProvider';
-import { ParseNodeType } from '../parser/parseNodes';
+import { ParameterCategory, ParseNodeType } from '../parser/parseNodes';
 import { ParseResults } from '../parser/parser';
 import { ImportLookupResult } from './analyzerFileInfo';
 import * as AnalyzerNodeInfo from './analyzerNodeInfo';
@@ -64,7 +64,7 @@ import { AliasDeclaration, DeclarationType, VariableDeclaration } from './declar
 import { ImportedModuleDescriptor, ImportResolver } from './importResolver';
 import { ImportResult, ImportType } from './importResult';
 import { ModuleInfo } from './packageTypeReport';
-import { findNodeByOffset, getDocString } from './parseTreeUtils';
+import { findNodeByOffset, getDocString, printExpression, PrintExpressionFlags } from './parseTreeUtils';
 import { Scope } from './scope';
 import { getScopeForNode } from './scopeUtils';
 import { SourceFile } from './sourceFile';
@@ -1872,6 +1872,7 @@ export class Program {
                                         fullName: type.details.fullName,
                                         kind: 'function',
                                         type: this.printType(type, false),
+                                        params: this.apiDocsParamsInfo(type),
                                     });
                                 } else if (isDeclarationType(DeclarationType.Function) && isOverloadedFunction(type)) {
                                     let suffix = 1;
@@ -1921,6 +1922,21 @@ export class Program {
         }
         this._removeUnneededFiles();
         return result;
+    }
+
+    private apiDocsParamsInfo(type: FunctionType) {
+        return type.details.parameters.map((parameter) => ({
+            name: parameter.type.flags,
+            defaultValue: parameter.defaultValueExpression
+                ? printExpression(parameter.defaultValueExpression, PrintExpressionFlags.None)
+                : undefined,
+            category:
+                parameter.category === ParameterCategory.Simple
+                    ? 'simple'
+                    : parameter.category === ParameterCategory.VarArgList
+                    ? 'varargList'
+                    : 'varargDict',
+        }));
     }
 
     private _handleMemoryHighUsage() {

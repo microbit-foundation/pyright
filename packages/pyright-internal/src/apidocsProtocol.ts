@@ -13,6 +13,14 @@ export interface ApiDocsBaseClass {
     fullName: string;
 }
 
+export type ApiDocsFunctionParameterCategory = 'simple' | 'varargList' | 'varargDict';
+
+export interface ApiDocsFunctionParameter {
+    name: string;
+    category: ApiDocsFunctionParameterCategory;
+    defaultValue?: string;
+}
+
 export interface ApiDocsEntry {
     id: string;
     name: string;
@@ -22,6 +30,7 @@ export interface ApiDocsEntry {
     kind: 'function' | 'module' | 'class' | 'variable';
     children?: ApiDocsEntry[];
     baseClasses?: ApiDocsBaseClass[];
+    params?: ApiDocsFunctionParameter[];
 }
 
 export interface ApiDocsResponse extends Record<string, ApiDocsEntry> {}
