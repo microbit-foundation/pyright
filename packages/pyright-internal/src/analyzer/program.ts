@@ -1851,7 +1851,6 @@ export class Program {
                                         docString: docStringConversion(type.details.docString),
                                         fullName: type.details.fullName,
                                         kind: 'class',
-                                        type: this.printType(type, false),
                                         baseClasses: type.details.baseClasses
                                             .map((baseClass) => ({
                                                 name: (baseClass as ClassType).details.name,
@@ -1871,7 +1870,6 @@ export class Program {
                                         docString: docStringConversion(type.details.docString),
                                         fullName: type.details.fullName,
                                         kind: 'function',
-                                        type: this.printType(type, false),
                                         params: this.apiDocsParamsInfo(type),
                                     });
                                 } else if (isDeclarationType(DeclarationType.Function) && isOverloadedFunction(type)) {
@@ -1883,7 +1881,6 @@ export class Program {
                                             docString: docStringConversion(overload.details.docString),
                                             fullName: overload.details.fullName,
                                             kind: 'function',
-                                            type: this.printType(overload, false),
                                             params: this.apiDocsParamsInfo(overload),
                                         });
                                     }
@@ -1896,7 +1893,6 @@ export class Program {
                                         name,
                                         fullName: [...parents, name].join('.'),
                                         kind: 'variable',
-                                        type: this.printType(type, false),
                                         docString: docStringConversion(variable.docString),
                                     });
                                 } else if (isDeclarationType(DeclarationType.Alias) && isModule(type)) {

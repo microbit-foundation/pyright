@@ -26,7 +26,6 @@ export interface ApiDocsEntry {
     name: string;
     docString?: string;
     fullName: string;
-    type?: string;
     kind: 'function' | 'module' | 'class' | 'variable';
     children?: ApiDocsEntry[];
     baseClasses?: ApiDocsBaseClass[];
