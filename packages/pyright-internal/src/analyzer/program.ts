@@ -1884,6 +1884,7 @@ export class Program {
                                             fullName: overload.details.fullName,
                                             kind: 'function',
                                             type: this.printType(overload, false),
+                                            params: this.apiDocsParamsInfo(overload),
                                         });
                                     }
                                 } else if (isDeclarationType(DeclarationType.Variable)) {
@@ -1926,7 +1927,7 @@ export class Program {
 
     private apiDocsParamsInfo(type: FunctionType) {
         return type.details.parameters.map((parameter) => ({
-            name: parameter.type.flags,
+            name: parameter.name,
             defaultValue: parameter.defaultValueExpression
                 ? printExpression(parameter.defaultValueExpression, PrintExpressionFlags.None)
                 : undefined,
