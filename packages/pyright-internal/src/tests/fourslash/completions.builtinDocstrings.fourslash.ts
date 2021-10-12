@@ -44,27 +44,27 @@
                 {
                     label: 'object',
                     kind: Consts.CompletionItemKind.Class,
-                    documentation: 'class object()\n\nThis is the class doc for object.',
+                    documentation: 'This is the class doc for object.',
                 },
                 {
                     label: 'A',
                     kind: Consts.CompletionItemKind.Class,
-                    documentation: 'class A()',
+                    documentation: undefined,
                 },
                 {
                     label: 'B',
                     kind: Consts.CompletionItemKind.Class,
-                    documentation: 'class B()\n\nThis is the class doc for B.',
+                    documentation: 'This is the class doc for B.',
                 },
                 {
                     label: 'C',
                     kind: Consts.CompletionItemKind.Class,
-                    documentation: 'class C()\n\nThis is the class doc for C.',
+                    documentation: 'This is the class doc for C.',
                 },
                 {
                     label: 'D',
                     kind: Consts.CompletionItemKind.Class,
-                    documentation: 'class D()',
+                    documentation: undefined,
                 },
             ],
         },
@@ -73,7 +73,7 @@
                 {
                     label: '__init__',
                     kind: Consts.CompletionItemKind.Method,
-                    documentation: '__init__: () -> None\n\nThis is the __init__ doc for object.',
+                    documentation: 'builtins.object.__init__()\n\nThis is the __init__ doc for object.',
                 },
             ],
         },
@@ -82,7 +82,7 @@
                 {
                     label: '__init__',
                     kind: Consts.CompletionItemKind.Method,
-                    documentation: '__init__: () -> None',
+                    documentation: 'builtins.object.__init__()',
                 },
             ],
         },
@@ -91,7 +91,7 @@
                 {
                     label: '__init__',
                     kind: Consts.CompletionItemKind.Method,
-                    documentation: '__init__: () -> None\n\nThis is the __init__ doc for B.',
+                    documentation: 'docstrings.B.__init__()\n\nThis is the __init__ doc for B.',
                 },
             ],
         },
@@ -100,7 +100,7 @@
                 {
                     label: '__init__',
                     kind: Consts.CompletionItemKind.Method,
-                    documentation: '__init__: () -> None',
+                    documentation: 'docstrings.C.__init__()',
                 },
             ],
         },
@@ -109,7 +109,7 @@
                 {
                     label: '__init__',
                     kind: Consts.CompletionItemKind.Method,
-                    documentation: '__init__: () -> None\n\nThis is the __init__ doc for D.',
+                    documentation: 'docstrings.D.__init__()\n\nThis is the __init__ doc for D.',
                 },
             ],
         },

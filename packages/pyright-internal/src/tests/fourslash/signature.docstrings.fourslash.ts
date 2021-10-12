@@ -19,8 +19,8 @@
         marker1: {
             signatures: [
                 {
-                    label: '(a: str, b: int) -> str',
-                    parameters: ['a: str', 'b: int'],
+                    label: 'docstrings.repeat(a, b)',
+                    parameters: ['a', 'b'],
                     documentation: "Repeat the string ``a`` ``b`` times.\n\n>>> repeat('foo', 3)\n'foofoofoo'",
                 },
             ],
@@ -32,8 +32,8 @@
         marker1: {
             signatures: [
                 {
-                    label: '(a: str, b: int) -> str',
-                    parameters: ['a: str', 'b: int'],
+                    label: 'docstrings.repeat(a, b)',
+                    parameters: ['a', 'b'],
                     documentation: "Repeat the string `a` `b` times.\n\n```\n>>> repeat('foo', 3)\n'foofoofoo'\n```",
                 },
             ],

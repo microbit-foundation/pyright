@@ -73,7 +73,7 @@ await helper.verifyCompletion('includes', 'markdown', {
             {
                 label: 'func',
                 kind: Consts.CompletionItemKind.Variable,
-                documentation: '```python\nfunc: ufunc\n```\n---\nfunc docs',
+                documentation: 'func docs',
             },
         ],
     },
@@ -82,7 +82,7 @@ await helper.verifyCompletion('includes', 'markdown', {
             {
                 label: 'func2',
                 kind: Consts.CompletionItemKind.Method,
-                documentation: '```python\nfunc2: () -> None\n```\n---\nfunc2 docs',
+                documentation: '```python\nlib1.MyType.func2()\n```\n---\nfunc2 docs',
             },
         ],
     },
@@ -91,7 +91,7 @@ await helper.verifyCompletion('includes', 'markdown', {
             {
                 label: 'func3',
                 kind: Consts.CompletionItemKind.Variable,
-                documentation: '```python\nfunc3: ufunc\n```\n---\nfunc3 docs',
+                documentation: 'func3 docs',
             },
         ],
     },
@@ -100,7 +100,7 @@ await helper.verifyCompletion('includes', 'markdown', {
             {
                 label: 'func4',
                 kind: Consts.CompletionItemKind.Variable,
-                documentation: '```python\nfunc4: ufunc\n```\n---\nfunc4 docs',
+                documentation: 'func4 docs',
             },
         ],
     },
@@ -109,7 +109,7 @@ await helper.verifyCompletion('includes', 'markdown', {
             {
                 label: 'func5',
                 kind: Consts.CompletionItemKind.Variable,
-                documentation: '```python\nfunc5: ufunc\n```\n---\nfunc5 docs',
+                documentation: 'func5 docs',
             },
         ],
     },

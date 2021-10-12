@@ -45,8 +45,7 @@ await helper.verifyCompletion('included', 'markdown', {
             {
                 label: 'func',
                 kind: Consts.CompletionItemKind.Method,
-                documentation:
-                    '```python\nfunc(self: ChildA, x: str) -> str\nfunc(self: ChildA, x: int) -> int\n```\n---\nfunc docs',
+                documentation: '```python\noverloads_client.ChildA.func(x)\n```\n---\nfunc docs',
             },
         ],
     },

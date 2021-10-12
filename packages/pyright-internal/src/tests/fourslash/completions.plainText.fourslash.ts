@@ -22,12 +22,12 @@ await helper.verifyCompletion('exact', 'plaintext', {
             {
                 label: 'some_func1',
                 kind: Consts.CompletionItemKind.Function,
-                documentation: 'some_func1: (a: Unknown) -> None\n\nsome function docs',
+                documentation: 'test.some_func1(a)\n\nsome function docs',
             },
             {
                 label: 'some_func2',
                 kind: Consts.CompletionItemKind.Function,
-                documentation: 'some_func2: (a: Unknown) -> None\n\nanother function docs',
+                documentation: 'test.some_func2(a)\n\nanother function docs',
             },
         ],
     },

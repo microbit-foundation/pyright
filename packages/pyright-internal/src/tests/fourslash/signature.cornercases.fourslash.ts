@@ -9,8 +9,8 @@
 {
     const simpleSignatures = [
         {
-            label: '(x: int, y: int) -> int',
-            parameters: ['x: int', 'y: int'],
+            label: 'simple.simple(x, y)',
+            parameters: ['x', 'y'],
         },
     ];
 

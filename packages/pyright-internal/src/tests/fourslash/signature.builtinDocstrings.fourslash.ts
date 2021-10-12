@@ -39,24 +39,34 @@
     helper.verifySignature('plaintext', {
         object: {
             signatures: [
-                { label: '() -> None', parameters: [], documentation: 'This is the __init__ doc for object.' },
+                {
+                    label: 'builtins.object.__init__()',
+                    parameters: [],
+                    documentation: 'This is the __init__ doc for object.',
+                },
             ],
             activeParameters: [undefined],
         },
         a: {
-            signatures: [{ label: '() -> None', parameters: [] }],
+            signatures: [{ label: 'builtins.object.__init__()', parameters: [] }],
             activeParameters: [undefined],
         },
         b: {
-            signatures: [{ label: '() -> None', parameters: [], documentation: 'This is the __init__ doc for B.' }],
+            signatures: [
+                { label: 'docstrings.B.__init__()', parameters: [], documentation: 'This is the __init__ doc for B.' },
+            ],
             activeParameters: [undefined],
         },
         c: {
-            signatures: [{ label: '() -> None', parameters: [], documentation: 'This is the class doc for C.' }],
+            signatures: [
+                { label: 'docstrings.C.__init__()', parameters: [], documentation: 'This is the class doc for C.' },
+            ],
             activeParameters: [undefined],
         },
         d: {
-            signatures: [{ label: '() -> None', parameters: [], documentation: 'This is the __init__ doc for D.' }],
+            signatures: [
+                { label: 'docstrings.D.__init__()', parameters: [], documentation: 'This is the __init__ doc for D.' },
+            ],
             activeParameters: [undefined],
         },
     });

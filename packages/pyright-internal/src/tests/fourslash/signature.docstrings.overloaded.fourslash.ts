@@ -16,13 +16,13 @@
         marker1: {
             signatures: [
                 {
-                    label: '() -> str',
+                    label: 'docstrings.repeat()',
                     parameters: [],
                     documentation: 'This is a docstring on the first overload.',
                 },
                 {
-                    label: '(x: int) -> int',
-                    parameters: ['x: int'],
+                    label: 'docstrings.repeat(x)',
+                    parameters: ['x'],
                     documentation: 'This is a docstring on the first overload.',
                 },
             ],
@@ -34,13 +34,13 @@
         marker1: {
             signatures: [
                 {
-                    label: '() -> str',
+                    label: 'docstrings.repeat()',
                     parameters: [],
                     documentation: 'This is a docstring on the first overload.',
                 },
                 {
-                    label: '(x: int) -> int',
-                    parameters: ['x: int'],
+                    label: 'docstrings.repeat(x)',
+                    parameters: ['x'],
                     documentation: 'This is a docstring on the first overload.',
                 },
             ],

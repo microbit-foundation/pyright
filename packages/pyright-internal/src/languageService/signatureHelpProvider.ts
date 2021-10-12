@@ -17,11 +17,13 @@ import * as ParseTreeUtils from '../analyzer/parseTreeUtils';
 import { getCallNodeAndActiveParameterIndex } from '../analyzer/parseTreeUtils';
 import { SourceMapper } from '../analyzer/sourceMapper';
 import { CallSignature, TypeEvaluator } from '../analyzer/typeEvaluatorTypes';
+import { FunctionParameter } from '../analyzer/types';
 import { throwIfCancellationRequested } from '../common/cancellationUtils';
 import { convertPositionToOffset } from '../common/positionUtils';
 import { Position } from '../common/textRange';
-import { CallNode, NameNode, ParseNodeType } from '../parser/parseNodes';
+import { CallNode, NameNode, ParameterCategory, ParseNodeType } from '../parser/parseNodes';
 import { ParseResults } from '../parser/parser';
+import { printSimplifiedFunctionSignature } from './completionProvider';
 import { getDocumentationPartsForTypeAndDecl, getFunctionDocStringFromType } from './tooltipUtils';
 
 export interface ParamInfo {
@@ -122,37 +124,43 @@ export class SignatureHelpProvider {
         format: MarkupKind
     ): SignatureInfo {
         const functionType = signature.type;
-        const stringParts = evaluator.printFunctionParts(functionType);
         const parameters: ParamInfo[] = [];
         const functionDocString =
             getFunctionDocStringFromType(functionType, sourceMapper, evaluator) ??
             this._getDocStringFromCallNode(callNode, sourceMapper, evaluator);
 
-        let label = '(';
-        const params = functionType.details.parameters;
-
-        stringParts[0].forEach((paramString: string, paramIndex) => {
-            let paramName = '';
-            if (paramIndex < params.length) {
-                paramName = params[paramIndex].name || '';
-            } else if (params.length > 0) {
-                paramName = params[params.length - 1].name || '';
+        // micro:bit-specific change to drop type information here
+        // We don't filter out defaulted params here as they could be active.
+        let label = functionType.details.fullName + '(';
+        const params = functionType.details.parameters.filter((p, index) => !(index === 0 && p.name === 'self'));
+        params.forEach((param: FunctionParameter, paramIndex) => {
+            let paramString: string = param.name || '';
+            if (param.category === ParameterCategory.VarArgList) {
+                paramString = '*' + paramString;
+            } else if (param.category === ParameterCategory.VarArgDictionary) {
+                paramString = '**' + paramString;
+            }
+            if (param.hasDefault && param.defaultValueExpression) {
+                paramString += ' = ';
+                paramString += ParseTreeUtils.printExpression(
+                    param.defaultValueExpression,
+                    ParseTreeUtils.PrintExpressionFlags.ForwardDeclarations
+                );
             }
 
             parameters.push({
                 startOffset: label.length,
                 endOffset: label.length + paramString.length,
                 text: paramString,
-                documentation: extractParameterDocumentation(functionDocString || '', paramName),
+                documentation: extractParameterDocumentation(functionDocString || '', paramString),
             });
 
             label += paramString;
-            if (paramIndex < stringParts[0].length - 1) {
+            if (paramIndex < params.length - 1) {
                 label += ', ';
             }
         });
-
-        label += ') -> ' + stringParts[1];
+        label += ')';
 
         let activeParameter: number | undefined;
         if (signature.activeParam) {

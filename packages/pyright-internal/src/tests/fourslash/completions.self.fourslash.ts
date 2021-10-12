@@ -21,22 +21,22 @@ await helper.verifyCompletion('included', 'markdown', {
             {
                 label: 'method1',
                 kind: Consts.CompletionItemKind.Method,
-                documentation: '```python\nmethod1: () -> None\n```\n---\nMethod 1.',
+                documentation: '```python\ntest.Foo.method1()\n```\n---\nMethod 1.',
             },
             {
                 label: 'new_method',
                 kind: Consts.CompletionItemKind.Method,
-                documentation: '```python\nnew_method: () -> None\n```',
+                documentation: '```python\ntest.Foo.new_method()\n```',
             },
             {
                 label: 'prop1',
                 kind: Consts.CompletionItemKind.Property,
-                documentation: '```python\nprop1: Literal[2] (property)\n```\n---\nProperty 1.',
+                documentation: '```python\ntest.Foo.prop1 (property)\n```\n---\nProperty 1.',
             },
             {
                 label: 'var1',
                 kind: Consts.CompletionItemKind.Variable,
-                documentation: '```python\nvar1: int\n```',
+                documentation: undefined,
             },
         ],
     },

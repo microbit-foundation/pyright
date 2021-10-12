@@ -32,22 +32,22 @@
 {
     const xInitSignatures = [
         {
-            label: '(x: bool) -> None',
-            parameters: ['x: bool'],
+            label: 'complicated.A.__init__(x)',
+            parameters: ['x'],
         },
     ];
 
     const xComplicatedSignatures = [
         {
-            label: '(a: int, b: int, c: int = 1234, d: str | None = None, **kwargs: Any) -> (int | str)',
-            parameters: ['a: int', 'b: int', 'c: int = 1234', 'd: str | None = None', '**kwargs: Any'],
+            label: 'complicated.A.complicated(a, b, c = 1234, d = None, **kwargs)',
+            parameters: ['a', 'b', 'c = 1234', 'd = None', '**kwargs'],
         },
     ];
 
     const xCallSignatures = [
         {
-            label: '(z: float) -> complex',
-            parameters: ['z: float'],
+            label: 'complicated.A.__call__(z)',
+            parameters: ['z'],
         },
     ];
 

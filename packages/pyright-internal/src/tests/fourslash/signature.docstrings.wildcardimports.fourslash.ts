@@ -71,7 +71,7 @@
         marker1: {
             signatures: [
                 {
-                    label: '() -> None',
+                    label: 'lib1.ufunc.__call__()',
                     parameters: [],
                     documentation: 'func docs',
                 },
@@ -81,7 +81,7 @@
         marker2: {
             signatures: [
                 {
-                    label: '() -> None',
+                    label: 'lib1.MyType.func2()',
                     parameters: [],
                     documentation: 'func2 docs',
                 },
@@ -91,7 +91,7 @@
         marker3: {
             signatures: [
                 {
-                    label: '() -> None',
+                    label: 'lib1.ufunc.__call__()',
                     parameters: [],
                     documentation: 'func3 docs',
                 },
@@ -101,7 +101,7 @@
         marker4: {
             signatures: [
                 {
-                    label: '() -> None',
+                    label: 'lib1.ufunc.__call__()',
                     parameters: [],
                     documentation: 'func4 docs',
                 },
@@ -111,7 +111,7 @@
         marker5: {
             signatures: [
                 {
-                    label: '() -> None',
+                    label: 'lib1.ufunc.__call__()',
                     parameters: [],
                     documentation: 'func5 docs',
                 },

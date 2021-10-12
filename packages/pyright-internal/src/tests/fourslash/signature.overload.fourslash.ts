@@ -25,16 +25,16 @@
 {
     const overloadedSignatures = [
         {
-            label: '() -> int',
+            label: 'overloaded.foo()',
             parameters: [],
         },
         {
-            label: '(x: int) -> int',
-            parameters: ['x: int'],
+            label: 'overloaded.foo(x)',
+            parameters: ['x'],
         },
         {
-            label: '(x: int, y: int) -> str',
-            parameters: ['x: int', 'y: int'],
+            label: 'overloaded.foo(x, y)',
+            parameters: ['x', 'y'],
         },
     ];
 

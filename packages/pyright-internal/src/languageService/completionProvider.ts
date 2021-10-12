@@ -2065,6 +2065,8 @@ export class CompletionProvider {
                         const type = this._evaluator.getEffectiveTypeOfSymbol(symbol);
                         if (type) {
                             let typeDetail: string | undefined;
+                            // micro:bit-specific change to drop type information here
+                            let altDetail: string | undefined;
                             let documentation: string | undefined;
 
                             switch (primaryDecl.type) {
@@ -2101,6 +2103,8 @@ export class CompletionProvider {
                                                 ': ' +
                                                 this._evaluator.printType(propertyType, /* expandTypeAlias */ false) +
                                                 ' (property)';
+                                            altDetail =
+                                                detail.boundObject.details.fullName + '.' + name + ' (property)';
                                         } else if (isOverloadedFunction(functionType)) {
                                             // 35 is completion tooltip's default width size
                                             typeDetail = getOverloadedFunctionTooltip(
@@ -2108,11 +2112,16 @@ export class CompletionProvider {
                                                 this._evaluator,
                                                 /* columnThreshold */ 35
                                             );
+                                            // Intentionally just the first, usually simplest one.
+                                            altDetail = printSimplifiedFunctionSignature(functionType.overloads[0]);
                                         } else {
                                             typeDetail =
                                                 name +
                                                 ': ' +
                                                 this._evaluator.printType(functionType, /* expandTypeAlias */ false);
+                                            if (isFunction(functionType)) {
+                                                altDetail = printSimplifiedFunctionSignature(functionType);
+                                            }
                                         }
                                     }
                                     break;
@@ -2197,12 +2206,19 @@ export class CompletionProvider {
                                     primaryDecl) as VariableDeclaration;
                                 documentation = getVariableDocString(decl, this._sourceMapper);
                             }
-
+                            if (!altDetail && !documentation) {
+                                // Bail if we have nothing.
+                                return;
+                            }
                             if (this._options.format === MarkupKind.Markdown) {
-                                let markdownString = '```python\n' + typeDetail + '\n```\n';
-
-                                if (documentation) {
+                                let markdownString = '';
+                                if (altDetail) {
+                                    markdownString += '```python\n' + altDetail + '\n```\n';
+                                }
+                                if (altDetail && documentation) {
                                     markdownString += '---\n';
+                                }
+                                if (documentation) {
                                     markdownString += convertDocStringToMarkdown(documentation);
                                 }
 
@@ -2213,10 +2229,14 @@ export class CompletionProvider {
                                     value: markdownString,
                                 };
                             } else if (this._options.format === MarkupKind.PlainText) {
-                                let plainTextString = typeDetail + '\n';
-
-                                if (documentation) {
+                                let plainTextString = '';
+                                if (altDetail) {
+                                    plainTextString += altDetail + '\n';
+                                }
+                                if (altDetail && documentation) {
                                     plainTextString += '\n';
+                                }
+                                if (documentation) {
                                     plainTextString += convertDocStringToPlainText(documentation);
                                 }
 
@@ -2543,4 +2563,27 @@ export class CompletionProvider {
         // before doing more expensive type evaluation.
         return decl.isMethod && decl.node.decorators.length > 0;
     }
+}
+
+export function printSimplifiedFunctionSignature(functionType: FunctionType): string {
+    // This is a bit arbitrary but works well for us as we have drill-down
+    // to more detailed docs. Better handling of self/cls would be good.
+    const parameters = functionType.details.parameters.filter(
+        (p, index) => !p.hasDefault && !(index === 0 && p.name === 'self')
+    );
+    return (
+        functionType.details.fullName +
+        '(' +
+        parameters
+            .map((p) => {
+                if (p.category === ParameterCategory.VarArgList) {
+                    return '*' + p.name;
+                } else if (p.category === ParameterCategory.VarArgDictionary) {
+                    return '**' + p.name;
+                }
+                return p.name;
+            })
+            .join(', ') +
+        ')'
+    );
 }

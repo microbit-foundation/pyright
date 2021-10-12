@@ -26,8 +26,7 @@ await helper.verifyCompletion('included', 'markdown', {
             {
                 label: 'func',
                 kind: Consts.CompletionItemKind.Function,
-                documentation:
-                    '```python\nfunc(x: str) -> str\nfunc(x: bytes) -> bytes\nfunc(x: int) -> int\n```\n---\nfunc docs',
+                documentation: '```python\noverloads.func(x)\n```\n---\nfunc docs',
             },
         ],
     },

@@ -34,7 +34,7 @@ await helper.verifyCompletion('includes', 'markdown', {
             {
                 label: 'bbb',
                 kind: Consts.CompletionItemKind.Variable,
-                documentation: '```python\nbbb: str\n```\n---\nbbb is a str',
+                documentation: 'bbb is a str',
             },
         ],
     },
@@ -43,7 +43,7 @@ await helper.verifyCompletion('includes', 'markdown', {
             {
                 label: 'aaa',
                 kind: Consts.CompletionItemKind.Variable,
-                documentation: '```python\naaa: int\n```\n---\naaa is an int',
+                documentation: 'aaa is an int',
             },
         ],
     },
@@ -52,7 +52,7 @@ await helper.verifyCompletion('includes', 'markdown', {
             {
                 label: 'ccc',
                 kind: Consts.CompletionItemKind.Variable,
-                documentation: '```python\nccc: Foo\n```\n---\nccc is a Foo',
+                documentation: 'ccc is a Foo',
             },
         ],
     },
@@ -61,8 +61,7 @@ await helper.verifyCompletion('includes', 'markdown', {
             {
                 label: 'SomeType',
                 kind: Consts.CompletionItemKind.Variable,
-                documentation:
-                    "```python\nSomeType: Type[List[int | str]]\n```\n---\nHere's some documentation about SomeType",
+                documentation: "Here's some documentation about SomeType",
             },
         ],
     },

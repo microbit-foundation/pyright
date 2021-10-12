@@ -88,7 +88,7 @@ await helper.verifyCompletion('included', 'markdown', {
             {
                 label: 'length',
                 kind: Consts.CompletionItemKind.Property,
-                documentation: '```python\nlength: Unknown (property)\n```\n---\nread property doc',
+                documentation: '```python\ntest.ChildGetterDocs.length (property)\n```\n---\nread property doc',
             },
         ],
     },
@@ -97,7 +97,7 @@ await helper.verifyCompletion('included', 'markdown', {
             {
                 label: 'length',
                 kind: Consts.CompletionItemKind.Property,
-                documentation: '```python\nlength: Unknown (property)\n```\n---\nsetter property doc',
+                documentation: '```python\ntest.ChildSetterDocs.length (property)\n```\n---\nsetter property doc',
             },
         ],
     },
