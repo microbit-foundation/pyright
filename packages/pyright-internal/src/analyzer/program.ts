@@ -1844,12 +1844,13 @@ export class Program {
                                 const decls = symbol.getDeclarations();
                                 const isDeclarationType = (type: DeclarationType) => decls.some((d) => d.type === type);
                                 if (isDeclarationType(DeclarationType.Class) && isClass(type)) {
+                                    const fullName = type.details.fullName;
                                     target.push({
-                                        id: symbol.id.toString(),
+                                        id: fullName,
                                         name,
                                         children: [],
                                         docString: docStringConversion(type.details.docString),
-                                        fullName: type.details.fullName,
+                                        fullName,
                                         kind: 'class',
                                         baseClasses: type.details.baseClasses
                                             .map((baseClass) => ({
@@ -1864,22 +1865,24 @@ export class Program {
                                         type.details.fields
                                     );
                                 } else if (isDeclarationType(DeclarationType.Function) && isFunction(type)) {
+                                    const fullName = type.details.fullName;
                                     target.push({
-                                        id: symbol.id.toString(),
+                                        id: fullName,
                                         name,
                                         docString: docStringConversion(type.details.docString),
-                                        fullName: type.details.fullName,
+                                        fullName,
                                         kind: 'function',
                                         params: this.apiDocsParamsInfo(type),
                                     });
                                 } else if (isDeclarationType(DeclarationType.Function) && isOverloadedFunction(type)) {
                                     let suffix = 1;
                                     for (const overload of type.overloads) {
+                                        const fullName = overload.details.fullName;
                                         target.push({
-                                            id: `${symbol.id}-${suffix++}`,
+                                            id: `${fullName}-${suffix++}`,
                                             name,
                                             docString: docStringConversion(overload.details.docString),
-                                            fullName: overload.details.fullName,
+                                            fullName,
                                             kind: 'function',
                                             params: this.apiDocsParamsInfo(overload),
                                         });
@@ -1888,20 +1891,22 @@ export class Program {
                                     const variable = decls.find(
                                         (x) => x.type === DeclarationType.Variable
                                     ) as VariableDeclaration;
+                                    const fullName = [...parents, name].join('.');
                                     target.push({
-                                        id: symbol.id.toString(),
+                                        id: fullName,
                                         name,
-                                        fullName: [...parents, name].join('.'),
+                                        fullName,
                                         kind: 'variable',
                                         docString: docStringConversion(variable.docString),
                                     });
                                 } else if (isDeclarationType(DeclarationType.Alias) && isModule(type)) {
+                                    const fullName = type.moduleName;
                                     target.push({
-                                        id: symbol.id.toString(),
+                                        id: fullName,
                                         name,
                                         children: [],
                                         docString: docStringConversion(type.docString),
-                                        fullName: type.moduleName,
+                                        fullName,
                                         kind: 'module',
                                     });
                                     recurseSymbolTables(
