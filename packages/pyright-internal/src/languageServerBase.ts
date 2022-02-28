@@ -576,14 +576,12 @@ export abstract class LanguageServerBase implements LanguageServerInterface {
             const signatures = signatureHelpResults.signatures.map((sig) => {
                 let paramInfo: ParameterInformation[] = [];
                 if (sig.parameters) {
-                    paramInfo = sig.parameters.map((param) =>
-                        ParameterInformation.create(
-                            this.client.hasSignatureLabelOffsetCapability
-                                ? [param.startOffset, param.endOffset]
-                                : param.text,
-                            param.documentation
-                        )
-                    );
+                    paramInfo = sig.parameters.map((param) => ({
+                        label: this.client.hasSignatureLabelOffsetCapability
+                            ? [param.startOffset, param.endOffset]
+                            : param.text,
+                        documentation: param.documentation,
+                    }));
                 }
 
                 const sigInfo = SignatureInformation.create(sig.label, undefined, ...paramInfo);

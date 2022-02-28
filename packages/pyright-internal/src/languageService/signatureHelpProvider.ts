@@ -30,7 +30,7 @@ export interface ParamInfo {
     startOffset: number;
     endOffset: number;
     text: string;
-    documentation?: string | undefined;
+    documentation?: string | undefined | MarkupContent;
 }
 
 export interface SignatureInfo {
@@ -149,11 +149,18 @@ export class SignatureHelpProvider {
                 );
             }
 
+            // micro:bit change, convert the parameter docs too
+            const rawDocumentation = extractParameterDocumentation(functionDocString || '', paramName);
+            const documentation = rawDocumentation
+                ? format === MarkupKind.Markdown
+                    ? { kind: MarkupKind.Markdown, value: convertDocStringToMarkdown(rawDocumentation) }
+                    : { kind: MarkupKind.PlainText, value: convertDocStringToPlainText(rawDocumentation) }
+                : undefined;
             parameters.push({
                 startOffset: label.length,
                 endOffset: label.length + paramString.length,
                 text: paramString,
-                documentation: extractParameterDocumentation(functionDocString || '', paramName),
+                documentation,
             });
 
             label += paramString;
