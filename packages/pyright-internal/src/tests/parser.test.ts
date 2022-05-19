@@ -57,6 +57,20 @@ test('SuiteExpectedColon3', () => {
     assert.strictEqual(diagSink.getErrors().length, 1);
 });
 
+test('SuiteExpectedColon4', () => {
+    const diagSink = new DiagnosticSink();
+    TestUtils.parseSampleFile('suiteExpectedColon4.py', diagSink);
+    assert.strictEqual(diagSink.getErrors().length, 1);
+    assert.strictEqual(diagSink.getErrors()[0].message, 'Expected equality operator, did you mean "=="?');
+});
+
+test('SuiteExpectedColon5', () => {
+    const diagSink = new DiagnosticSink();
+    TestUtils.parseSampleFile('suiteExpectedColon5.py', diagSink);
+    assert.strictEqual(diagSink.getErrors().length, 1);
+    assert.strictEqual(diagSink.getErrors()[0].message, 'Missing colon ":"');
+});
+
 test('ExpressionWrappedInParens', () => {
     const diagSink = new DiagnosticSink();
     const parseResults = TestUtils.parseText('(str)', diagSink);

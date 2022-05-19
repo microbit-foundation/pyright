@@ -178,6 +178,13 @@ function loadStringsForLocale(locale: string, microbit = false): StringLookupMap
         if (override !== undefined) {
             return override;
         }
+        // Fallback to English micro:bit strings.
+        if (microbit) {
+            override = loadStringsFromJsonFile('en', microbit);
+            if (override !== undefined) {
+                return override;
+            }
+        }
     }
 
     return {};
