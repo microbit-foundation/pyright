@@ -388,6 +388,7 @@ export namespace Localizer {
         export const expectedDecoratorNewline = () => getRawString('Diagnostic.expectedDecoratorNewline');
         export const expectedDelExpr = () => getRawString('Diagnostic.expectedDelExpr');
         export const expectedElse = () => getRawString('Diagnostic.expectedElse');
+        export const expectedEqualityOperator = () => getRawString('Diagnostic.expectedEqualityOperator');
         export const expectedExceptionClass = () => getRawString('Diagnostic.expectedExceptionClass');
         export const expectedExceptionObj = () => getRawString('Diagnostic.expectedExceptionObj');
         export const expectedExpr = () => getRawString('Diagnostic.expectedExpr');

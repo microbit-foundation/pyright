@@ -1207,10 +1207,17 @@ export class Parser {
     private _parseSuite(isFunction = false, skipBody = false, postColonCallback?: () => void): SuiteNode {
         const nextToken = this._peekToken();
         const suite = SuiteNode.create(nextToken);
+        let comparisonOperator: OperatorType | undefined;
 
         if (!this._consumeTokenIfType(TokenType.Colon)) {
-            this._addError(Localizer.Diagnostic.expectedColon(), nextToken);
-
+            if (nextToken.type === TokenType.Operator) {
+                comparisonOperator = this._peekOperatorType();
+                if (comparisonOperator === OperatorType.Assign) {
+                    this._addError(Localizer.Diagnostic.expectedEqualityOperator(), nextToken);
+                }
+            } else {
+                this._addError(Localizer.Diagnostic.expectedColon(), nextToken);
+            }
             // Try to perform parse recovery by consuming tokens.
             if (this._consumeTokensUntilType([TokenType.NewLine, TokenType.Colon])) {
                 if (this._peekTokenType() === TokenType.Colon) {

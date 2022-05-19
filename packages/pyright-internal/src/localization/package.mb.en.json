@@ -5,6 +5,7 @@
         "expectedCloseBracket": "Missing closing bracket \"]\"",
         "expectedCloseParen": "Missing closing bracket \")\"",
         "expectedColon": "Missing colon \":\"",
+        "expectedEqualityOperator": "Expected equality operator, did you mean \"==\"?",
         "expectedIndentedBlock": "Indentation missing",
         "expectedNewlineOrSemicolon": "Unexpected extra content. Statements must be one per line",
         "inconsistentIndent": "Indentation does not match the previous line",
