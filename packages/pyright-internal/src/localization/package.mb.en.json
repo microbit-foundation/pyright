@@ -1,5 +1,9 @@
 {
     "Diagnostic": {
+        "argAssignmentParamFunction": "Argument of type \"{argType}\" cannot be assigned to parameter \"{paramName}\" of type \"{paramType}\" in function \"{functionName}\"",
+        "argMissingForParam": "Argument missing for parameter {name}",
+        "argMissingForParams": "Arguments missing for parameters {names}",
+        "argMorePositionalExpectedCount": "Expected {expected} more positional arguments",
         "booleanIsLowerCase": "\"{name}\" is not defined, did you mean \"{booleanName}\"?",
         "expectedCloseBrace": "Missing closing bracket \"}\"",
         "expectedCloseBracket": "Missing closing bracket \"]\"",
@@ -10,6 +14,7 @@
         "expectedNewlineOrSemicolon": "Unexpected extra content. Statements must be one per line",
         "inconsistentIndent": "Indentation does not match the previous line",
         "stringUnterminated": "String is not closed — missing quotation mark",
+        "unexpectedIndent": "Unexpected indentation",
         "unreachableCode": "Code is unreachable. The logic of your program means this code will never run"
     }
 }
