@@ -3791,8 +3791,8 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
         } else {
             // Handle the special case of boolean".
             if (name === 'true' || name === 'false') {
-                const nameSplit = name.split('')
-                nameSplit[0] = nameSplit[0].toUpperCase()
+                const nameSplit = name.split('');
+                nameSplit[0] = nameSplit[0].toUpperCase();
                 const booleanName = nameSplit.join('');
                 addDiagnostic(
                     fileInfo.diagnosticRuleSet.reportUndefinedVariable,
@@ -4600,7 +4600,10 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                             addDiagnostic(
                                 fileInfo.diagnosticRuleSet.reportGeneralTypeIssues,
                                 DiagnosticRule.reportGeneralTypeIssues,
-                                Localizer.Diagnostic.moduleUnknownMember().format({ name: memberName }),
+                                Localizer.Diagnostic.moduleUnknownMember().format({
+                                    name: memberName,
+                                    module: baseType.moduleName,
+                                }),
                                 node.memberName
                             );
                         }
