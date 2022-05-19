@@ -62,7 +62,7 @@ function getRawString(key: string): string {
     }
 
     if (microbitStrings === undefined) {
-        microbitStrings = getMicrobitStrings();
+        microbitStrings = initializeMicrobit();
     }
 
     const keyParts = key.split('.');
@@ -98,7 +98,7 @@ function initialize(): StringLookupMap {
     return loadStringsForLocale(currentLocale);
 }
 
-function getMicrobitStrings(): StringLookupMap {
+function initializeMicrobit(): StringLookupMap {
     const currentLocale = getLocaleFromEnv();
     return loadStringsForLocale(currentLocale, true);
 }
