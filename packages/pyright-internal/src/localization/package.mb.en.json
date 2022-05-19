@@ -15,6 +15,8 @@
         "expectedNewlineOrSemicolon": "Unexpected extra content. Statements must be one per line",
         "inconsistentIndent": "Indentation does not match the previous line",
         "stringUnterminated": "String is not closed — missing quotation mark",
+        "typeNotSupportBinaryOperator": "Operator \"{operator}\" not supported for this combination of types",
+        "typeNotSupportBinaryOperatorBidirectional": "Operator \"{operator}\" not supported for this combination of types",
         "unexpectedIndent": "Unexpected indentation",
         "unreachableCode": "Code is unreachable. The logic of your program means this code will never run"
     }

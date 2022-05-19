@@ -10887,7 +10887,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                             operator: ParseTreeUtils.printOperator(node.operator),
                             leftType: printType(leftType),
                             rightType: printType(rightType),
-                        }) + diag.getString(),
+                        }),
                         node
                     );
                 }
@@ -11050,7 +11050,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                         operator: ParseTreeUtils.printOperator(node.operator),
                         leftType: printType(leftType),
                         rightType: printType(rightType),
-                    }) + diag.getString(),
+                    }),
                     node
                 );
             }
