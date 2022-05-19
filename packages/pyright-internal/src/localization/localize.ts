@@ -18,6 +18,9 @@ import ruStrings = require('./package.nls.ru.json');
 import zhCnStrings = require('./package.nls.zh-cn.json');
 import zhTwStrings = require('./package.nls.zh-tw.json');
 
+// Micro:bit specific strings.
+import enMbStrings = require('./package.mb.en.json');
+
 export class ParameterizedString<T extends {}> {
     constructor(private _formatString: string) {}
 
@@ -46,7 +49,10 @@ const stringMapsByLocale: Map<string, any> = new Map([
     ['zh-tw', zhTwStrings],
 ]);
 
+const microbitStringMapsByLocale: Map<string, any> = new Map([['en', enMbStrings]]);
+
 type StringLookupMap = { [key: string]: string | StringLookupMap };
+let microbitStrings: StringLookupMap | undefined = undefined;
 let localizedStrings: StringLookupMap | undefined = undefined;
 let defaultStrings: StringLookupMap = {};
 
@@ -55,9 +61,16 @@ function getRawString(key: string): string {
         localizedStrings = initialize();
     }
 
+    if (microbitStrings === undefined) {
+        microbitStrings = getMicrobitStrings();
+    }
+
     const keyParts = key.split('.');
 
-    const str = getRawStringFromMap(localizedStrings, keyParts) || getRawStringFromMap(defaultStrings, keyParts);
+    const str =
+        getRawStringFromMap(microbitStrings, keyParts) ||
+        getRawStringFromMap(localizedStrings, keyParts) ||
+        getRawStringFromMap(defaultStrings, keyParts);
     if (str) {
         return str;
     }
@@ -83,6 +96,11 @@ function initialize(): StringLookupMap {
     defaultStrings = loadDefaultStrings();
     const currentLocale = getLocaleFromEnv();
     return loadStringsForLocale(currentLocale);
+}
+
+function getMicrobitStrings(): StringLookupMap {
+    const currentLocale = getLocaleFromEnv();
+    return loadStringsForLocale(currentLocale, true);
 }
 
 declare let navigator: { language: string } | undefined;
@@ -141,13 +159,13 @@ function loadDefaultStrings(): StringLookupMap {
     return {};
 }
 
-function loadStringsForLocale(locale: string): StringLookupMap {
+function loadStringsForLocale(locale: string, microbit = false): StringLookupMap {
     if (locale === defaultLocale) {
         // No need to load override if we're using the default.
         return {};
     }
 
-    let override = loadStringsFromJsonFile(locale);
+    let override = loadStringsFromJsonFile(locale, microbit);
     if (override !== undefined) {
         return override;
     }
@@ -156,7 +174,7 @@ function loadStringsForLocale(locale: string): StringLookupMap {
     // general version.
     const localeSplit = locale.split('-');
     if (localeSplit.length > 0 && localeSplit[0]) {
-        override = loadStringsFromJsonFile(localeSplit[0]);
+        override = loadStringsFromJsonFile(localeSplit[0], microbit);
         if (override !== undefined) {
             return override;
         }
@@ -165,7 +183,10 @@ function loadStringsForLocale(locale: string): StringLookupMap {
     return {};
 }
 
-function loadStringsFromJsonFile(locale: string): StringLookupMap | undefined {
+function loadStringsFromJsonFile(locale: string, microbit = false): StringLookupMap | undefined {
+    if (microbit) {
+        return microbitStringMapsByLocale.get(locale);
+    }
     return stringMapsByLocale.get(locale);
 }
 

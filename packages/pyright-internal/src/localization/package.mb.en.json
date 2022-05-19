@@ -1,0 +1,13 @@
+{
+    "Diagnostic": {
+        "expectedCloseBrace": "Missing closing bracket \"}\"",
+        "expectedCloseBracket": "Missing closing bracket \"]\"",
+        "expectedCloseParen": "Missing closing bracket \")\"",
+        "expectedColon": "Missing colon \":\"",
+        "expectedIndentedBlock": "Indentation missing",
+        "expectedNewlineOrSemicolon": "Unexpected extra content. Statements must be one per line",
+        "inconsistentIndent": "Indentation does not match the previous line",
+        "stringUnterminated": "String is not closed — missing quotation mark",
+        "unreachableCode": "Code is unreachable. The logic of your program means this code will never run"
+    }
+}
