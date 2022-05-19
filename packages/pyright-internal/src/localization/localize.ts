@@ -252,6 +252,10 @@ export namespace Localizer {
             new ParameterizedString<{ type: string; methodName: string; paramName: string }>(
                 getRawString('Diagnostic.bindTypeMismatch')
             );
+        export const booleanIsLowerCase = () =>
+            new ParameterizedString<{ name: string; booleanName: string }>(
+                getRawString('Diagnostic.booleanIsLowerCase')
+            );
         export const breakOutsideLoop = () => getRawString('Diagnostic.breakOutsideLoop');
         export const callableExtraArgs = () => getRawString('Diagnostic.callableExtraArgs');
         export const callableFirstArg = () => getRawString('Diagnostic.callableFirstArg');

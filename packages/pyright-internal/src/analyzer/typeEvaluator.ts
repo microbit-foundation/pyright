@@ -3789,8 +3789,20 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                 }
             }
         } else {
+            // Handle the special case of boolean".
+            if (name === 'true' || name === 'false') {
+                const nameSplit = name.split('')
+                nameSplit[0] = nameSplit[0].toUpperCase()
+                const booleanName = nameSplit.join('');
+                addDiagnostic(
+                    fileInfo.diagnosticRuleSet.reportUndefinedVariable,
+                    DiagnosticRule.reportUndefinedVariable,
+                    Localizer.Diagnostic.booleanIsLowerCase().format({ name, booleanName }),
+                    node
+                );
+            }
             // Handle the special case of "reveal_type" and "reveal_locals".
-            if (name !== 'reveal_type' && name !== 'reveal_locals') {
+            else if (name !== 'reveal_type' && name !== 'reveal_locals') {
                 addDiagnostic(
                     fileInfo.diagnosticRuleSet.reportUndefinedVariable,
                     DiagnosticRule.reportUndefinedVariable,

@@ -1,5 +1,6 @@
 {
     "Diagnostic": {
+        "booleanIsLowerCase": "\"{name}\" is not defined, did you mean \"{booleanName}\"?",
         "expectedCloseBrace": "Missing closing bracket \"}\"",
         "expectedCloseBracket": "Missing closing bracket \"]\"",
         "expectedCloseParen": "Missing closing bracket \")\"",
