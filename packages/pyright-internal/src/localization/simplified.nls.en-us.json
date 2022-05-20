@@ -21,6 +21,7 @@
         "importResolveFailure": "Module \"{importName}\" could not be found",
         "importSymbolUnknown": "\"{name}\" not found in module \"{moduleName}\"",
         "inconsistentIndent": "Indentation does not match the previous line",
+        "moduleUnknownMember": "\"{name}\" is not a known member of module \"{module}\"",
         "stringUnterminated": "String is not closed — missing quotation mark",
         "typeNotIterable": "Type is not iterable",
         "typeNotSupportBinaryOperator": "Operator \"{operator}\" not supported for this combination of types",
