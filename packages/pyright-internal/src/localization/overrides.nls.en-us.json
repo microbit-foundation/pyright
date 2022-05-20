@@ -20,6 +20,7 @@
         "importResolveFailure": "Import \"{importName}\" could not be resolved",
         "inconsistentIndent": "Indentation does not match the previous line",
         "stringUnterminated": "String is not closed — missing quotation mark",
+        "typeNotIterable": "Type is not iterable",
         "typeNotSupportBinaryOperator": "Operator \"{operator}\" not supported for this combination of types",
         "typeNotSupportBinaryOperatorBidirectional": "Operator \"{operator}\" not supported for this combination of types",
         "unaccessedFunction": "Function \"{name}\" is not accessed",
