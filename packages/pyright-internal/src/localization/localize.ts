@@ -19,6 +19,7 @@ import zhCnStrings = require('./package.nls.zh-cn.json');
 import zhTwStrings = require('./package.nls.zh-tw.json');
 
 import enUsSimplified = require('./simplified.nls.en-us.json');
+import { DiagnosticAddendum } from '../common/diagnostic';
 
 export class ParameterizedString<T extends {}> {
     constructor(private _formatString: string) {}
@@ -54,6 +55,10 @@ let messageStyle: MessageStyle = 'default';
 
 export function setMessageStyle(style: MessageStyle) {
     messageStyle = style;
+}
+
+export function optionalAddendum(diag: DiagnosticAddendum) {
+    return messageStyle === 'simplified' ? '' : diag.toString();
 }
 
 const defaultLocale = 'en-us';

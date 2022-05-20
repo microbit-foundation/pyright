@@ -25,7 +25,7 @@ import { DiagnosticRule } from '../common/diagnosticRules';
 import { convertOffsetsToRange } from '../common/positionUtils';
 import { PythonVersion } from '../common/pythonVersion';
 import { TextRange } from '../common/textRange';
-import { Localizer } from '../localization/localize';
+import { Localizer, optionalAddendum } from '../localization/localize';
 import {
     ArgumentCategory,
     AssignmentNode,
@@ -2311,7 +2311,8 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                 addDiagnostic(
                     AnalyzerNodeInfo.getFileInfo(errorNode).diagnosticRuleSet.reportGeneralTypeIssues,
                     DiagnosticRule.reportGeneralTypeIssues,
-                    Localizer.Diagnostic.typeNotIterable().format({ type: printType(subtype) }),
+                    Localizer.Diagnostic.typeNotIterable().format({ type: printType(subtype) }) +
+                        optionalAddendum(diag),
                     errorNode
                 );
             }
@@ -10045,7 +10046,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                 addDiagnostic(
                     fileInfo.diagnosticRuleSet.reportGeneralTypeIssues,
                     DiagnosticRule.reportGeneralTypeIssues,
-                    message,
+                    message + optionalAddendum(diag),
                     argParam.errorNode
                 );
             }
@@ -10887,7 +10888,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                             operator: ParseTreeUtils.printOperator(node.operator),
                             leftType: printType(leftType),
                             rightType: printType(rightType),
-                        }),
+                        }) + optionalAddendum(diag),
                         node
                     );
                 }
@@ -11050,7 +11051,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                         operator: ParseTreeUtils.printOperator(node.operator),
                         leftType: printType(leftType),
                         rightType: printType(rightType),
-                    }),
+                    }) + optionalAddendum(diag),
                     node
                 );
             }
