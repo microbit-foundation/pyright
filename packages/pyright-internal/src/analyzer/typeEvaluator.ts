@@ -16185,7 +16185,10 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                     addDiagnostic(
                         fileInfo.diagnosticRuleSet.reportGeneralTypeIssues,
                         DiagnosticRule.reportGeneralTypeIssues,
-                        Localizer.Diagnostic.importSymbolUnknown().format({ name: node.name.value }),
+                        Localizer.Diagnostic.importSymbolUnknown().format({
+                            name: node.name.value,
+                            moduleName: importInfo.importName,
+                        }),
                         node.name
                     );
                 }

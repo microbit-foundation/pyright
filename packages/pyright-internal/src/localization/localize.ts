@@ -459,7 +459,9 @@ export namespace Localizer {
         export const importSourceResolveFailure = () =>
             new ParameterizedString<{ importName: string }>(getRawString('Diagnostic.importSourceResolveFailure'));
         export const importSymbolUnknown = () =>
-            new ParameterizedString<{ name: string }>(getRawString('Diagnostic.importSymbolUnknown'));
+            new ParameterizedString<{ name: string; moduleName: string }>(
+                getRawString('Diagnostic.importSymbolUnknown')
+            );
         export const incompatibleMethodOverride = () =>
             new ParameterizedString<{ name: string; className: string }>(
                 getRawString('Diagnostic.incompatibleMethodOverride')
