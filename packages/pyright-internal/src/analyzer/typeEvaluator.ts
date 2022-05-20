@@ -3789,7 +3789,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                 }
             }
         } else {
-            // Handle the special case of boolean".
+            // Handle the special case of booleans.
             if (name === 'true' || name === 'false') {
                 const nameSplit = name.split('');
                 nameSplit[0] = nameSplit[0].toUpperCase();
