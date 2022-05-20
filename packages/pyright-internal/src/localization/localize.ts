@@ -18,7 +18,7 @@ import ruStrings = require('./package.nls.ru.json');
 import zhCnStrings = require('./package.nls.zh-cn.json');
 import zhTwStrings = require('./package.nls.zh-tw.json');
 
-import enUsOverrides = require('./overrides.nls.en-us.json');
+import enUsSimplified = require('./simplified.nls.en-us.json');
 
 export class ParameterizedString<T extends {}> {
     constructor(private _formatString: string) {}
@@ -48,17 +48,15 @@ function mergeStrings(a: any, b: any): any {
     return result;
 }
 
+type MessageStyle = 'default' | 'simplified';
+
+let messageStyle: MessageStyle = 'default';
+
+export function setMessageStyle(style: MessageStyle) {
+    messageStyle = style;
+}
+
 const defaultLocale = 'en-us';
-const stringMapsByLocale: Map<string, any> = new Map([
-    ['de', deStrings],
-    ['en-us', mergeStrings(enUsStrings, enUsOverrides)],
-    ['es', esStrings],
-    ['fr', frStrings],
-    ['ja', jaStrings],
-    ['ru', ruStrings],
-    ['zh-cn', zhCnStrings],
-    ['zh-tw', zhTwStrings],
-]);
 
 type StringLookupMap = { [key: string]: string | StringLookupMap };
 let localizedStrings: StringLookupMap | undefined = undefined;
@@ -180,7 +178,27 @@ function loadStringsForLocale(locale: string): StringLookupMap {
 }
 
 function loadStringsFromJsonFile(locale: string): StringLookupMap | undefined {
-    return stringMapsByLocale.get(locale);
+    console.log('Init', locale, messageStyle);
+    switch (locale) {
+        case 'de':
+            return deStrings;
+        case 'en-us':
+            return messageStyle === 'simplified' ? mergeStrings(enUsStrings, enUsSimplified) : enUsStrings;
+        case 'es':
+            return esStrings;
+        case 'fr':
+            return frStrings;
+        case 'ja':
+            return jaStrings;
+        case 'ru':
+            return ruStrings;
+        case 'zh-cn':
+            return zhCnStrings;
+        case 'zh-tw':
+            return zhTwStrings;
+        default:
+            return undefined;
+    }
 }
 
 export namespace Localizer {

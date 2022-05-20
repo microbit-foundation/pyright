@@ -68,7 +68,7 @@ test('SuiteExpectedColon5', () => {
     const diagSink = new DiagnosticSink();
     TestUtils.parseSampleFile('suiteExpectedColon5.py', diagSink);
     assert.strictEqual(diagSink.getErrors().length, 1);
-    assert.strictEqual(diagSink.getErrors()[0].message, 'Missing colon ":"');
+    assert.strictEqual(diagSink.getErrors()[0].message, 'Expected ":"');
 });
 
 test('ExpressionWrappedInParens', () => {

@@ -41,6 +41,7 @@ import {
     MarkupKind,
 } from 'vscode-languageserver';
 import { apiDocsRequestType } from 'pyright-internal/apidocsProtocol';
+import { setMessageStyle } from 'pyright-internal/localization/localize';
 
 const maxAnalysisTimeInForeground = { openFilesTimeInMs: 50, noOpenFilesTimeInMs: 200 };
 
@@ -125,6 +126,8 @@ export class PyrightServer extends LanguageServerBase {
             this._initialFiles = files as InitialFiles;
             (this._serverOptions.fileSystem as TestFileSystem).apply(files);
         }
+        // Hack to enable simplified error messages (locale is set in super.initialize).
+        setMessageStyle('simplified');
         return super.initialize(params, supportedCommands, supportedCodeActions);
     }
 
@@ -361,6 +364,10 @@ export class BrowserBackgroundAnalysis extends BackgroundAnalysisBase {
 export class BrowserBackgroundAnalysisRunner extends BackgroundAnalysisRunnerBase {
     constructor(initialData: InitializationData) {
         super(parentPort(), initialData);
+
+        // Hack to enable simplified error messages in the background thread.
+        // Ideally we'd route this from via initialData.
+        setMessageStyle('simplified');
     }
     createRealFileSystem(): FileSystem {
         return new TestFileSystem(false, {
