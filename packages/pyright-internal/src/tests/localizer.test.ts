@@ -14,6 +14,15 @@ import { Localizer, ParameterizedString } from '../localization/localize';
 const namespaces = [Localizer.Diagnostic, Localizer.DiagnosticAddendum, Localizer.CodeAction];
 
 test('Raw strings present', () => {
+    // Exceptions where message overrides on this branch have intentionally
+    // resulted in clashes.
+    const exemptions = new Set([
+        'argAssignmentParamFunction',
+        'argAssignmentParam',
+        'typeNotSupportBinaryOperatorBidirectional',
+        'typeNotSupportBinaryOperator',
+    ]);
+
     // Allocate a map so we can detect duplicate strings. This is
     // an indication that the string key (e.g. 'DiagnosticAddendum.useDictInstead')
     // used to fetch the localized string is a duplicate of another string key.
@@ -37,7 +46,7 @@ test('Raw strings present', () => {
                 assert.fail(`Default value for localized string "${key}" is unexpected type`);
             }
 
-            if (stringContentMap.has(formatString)) {
+            if (stringContentMap.has(formatString) && !exemptions.has(key)) {
                 assert.fail(`Localized string for "${key}" is duplicate of ${stringContentMap.get(formatString)}`);
             }
 

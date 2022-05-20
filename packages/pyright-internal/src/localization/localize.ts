@@ -18,8 +18,7 @@ import ruStrings = require('./package.nls.ru.json');
 import zhCnStrings = require('./package.nls.zh-cn.json');
 import zhTwStrings = require('./package.nls.zh-tw.json');
 
-// Micro:bit specific strings.
-import enMbStrings = require('./package.mb.en.json');
+import enUsOverrides = require('./overrides.nls.en-us.json');
 
 export class ParameterizedString<T extends {}> {
     constructor(private _formatString: string) {}
@@ -37,10 +36,22 @@ export class ParameterizedString<T extends {}> {
     }
 }
 
+function mergeStrings(a: any, b: any): any {
+    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+    const result: any = {};
+    for (const k of keys) {
+        result[k] = {
+            ...a[k],
+            ...b[k],
+        };
+    }
+    return result;
+}
+
 const defaultLocale = 'en-us';
 const stringMapsByLocale: Map<string, any> = new Map([
     ['de', deStrings],
-    ['en-us', enUsStrings],
+    ['en-us', mergeStrings(enUsStrings, enUsOverrides)],
     ['es', esStrings],
     ['fr', frStrings],
     ['ja', jaStrings],
@@ -49,10 +60,7 @@ const stringMapsByLocale: Map<string, any> = new Map([
     ['zh-tw', zhTwStrings],
 ]);
 
-const microbitStringMapsByLocale: Map<string, any> = new Map([['en', enMbStrings]]);
-
 type StringLookupMap = { [key: string]: string | StringLookupMap };
-let microbitStrings: StringLookupMap | undefined = undefined;
 let localizedStrings: StringLookupMap | undefined = undefined;
 let defaultStrings: StringLookupMap = {};
 
@@ -61,16 +69,9 @@ function getRawString(key: string): string {
         localizedStrings = initialize();
     }
 
-    if (microbitStrings === undefined) {
-        microbitStrings = initializeMicrobit();
-    }
-
     const keyParts = key.split('.');
 
-    const str =
-        getRawStringFromMap(microbitStrings, keyParts) ||
-        getRawStringFromMap(localizedStrings, keyParts) ||
-        getRawStringFromMap(defaultStrings, keyParts);
+    const str = getRawStringFromMap(localizedStrings, keyParts) || getRawStringFromMap(defaultStrings, keyParts);
     if (str) {
         return str;
     }
@@ -96,11 +97,6 @@ function initialize(): StringLookupMap {
     defaultStrings = loadDefaultStrings();
     const currentLocale = getLocaleFromEnv();
     return loadStringsForLocale(currentLocale);
-}
-
-function initializeMicrobit(): StringLookupMap {
-    const currentLocale = getLocaleFromEnv();
-    return loadStringsForLocale(currentLocale, true);
 }
 
 declare let navigator: { language: string } | undefined;
@@ -159,13 +155,13 @@ function loadDefaultStrings(): StringLookupMap {
     return {};
 }
 
-function loadStringsForLocale(locale: string, microbit = false): StringLookupMap {
+function loadStringsForLocale(locale: string): StringLookupMap {
     if (locale === defaultLocale) {
         // No need to load override if we're using the default.
         return {};
     }
 
-    let override = loadStringsFromJsonFile(locale, microbit);
+    let override = loadStringsFromJsonFile(locale);
     if (override !== undefined) {
         return override;
     }
@@ -174,26 +170,16 @@ function loadStringsForLocale(locale: string, microbit = false): StringLookupMap
     // general version.
     const localeSplit = locale.split('-');
     if (localeSplit.length > 0 && localeSplit[0]) {
-        override = loadStringsFromJsonFile(localeSplit[0], microbit);
+        override = loadStringsFromJsonFile(localeSplit[0]);
         if (override !== undefined) {
             return override;
-        }
-        // Fallback to English micro:bit strings.
-        if (microbit) {
-            override = loadStringsFromJsonFile('en', microbit);
-            if (override !== undefined) {
-                return override;
-            }
         }
     }
 
     return {};
 }
 
-function loadStringsFromJsonFile(locale: string, microbit = false): StringLookupMap | undefined {
-    if (microbit) {
-        return microbitStringMapsByLocale.get(locale);
-    }
+function loadStringsFromJsonFile(locale: string): StringLookupMap | undefined {
     return stringMapsByLocale.get(locale);
 }
 
