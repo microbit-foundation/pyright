@@ -366,7 +366,7 @@ export class BrowserBackgroundAnalysisRunner extends BackgroundAnalysisRunnerBas
         super(parentPort(), initialData);
 
         // Hack to enable simplified error messages in the background thread.
-        // Ideally we'd route this from via initialData.
+        // Ideally we'd route this via initialData.
         setMessageStyle('simplified');
     }
     createRealFileSystem(): FileSystem {

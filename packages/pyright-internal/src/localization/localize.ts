@@ -178,7 +178,6 @@ function loadStringsForLocale(locale: string): StringLookupMap {
 }
 
 function loadStringsFromJsonFile(locale: string): StringLookupMap | undefined {
-    console.log('Init', locale, messageStyle);
     switch (locale) {
         case 'de':
             return deStrings;
