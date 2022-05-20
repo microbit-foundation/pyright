@@ -187,7 +187,7 @@
         "importDepthExceeded": "Import chain depth exceeded {depth}",
         "importResolveFailure": "Import \"{importName}\" could not be resolved",
         "importSourceResolveFailure": "Import \"{importName}\" could not be resolved from source",
-        "importSymbolUnknown": "\"{name}\" is unknown import symbol",
+        "importSymbolUnknown": "\"{name}\" is unknown import symbol in module \"{moduleName}\"",
         "incompatibleMethodOverride": "Method \"{name}\" overrides class \"{className}\" in an incompatible manner",
         "inconsistentIndent": "Unindent amount does not match previous indent",
         "initMustReturnNone": "Return type of \"__init__\" must be None",
