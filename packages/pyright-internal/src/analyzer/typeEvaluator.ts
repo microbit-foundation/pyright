@@ -4734,7 +4734,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                 addDiagnostic(
                     ruleSet,
                     rule,
-                    diagMessage.format({ name: memberName, type: printType(baseType) }) + diag.getString(),
+                    diagMessage.format({ name: memberName, type: printType(baseType) }) + optionalAddendum(diag),
                     node.memberName
                 );
             }
