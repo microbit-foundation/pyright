@@ -53,12 +53,16 @@ type MessageStyle = 'default' | 'simplified';
 
 let messageStyle: MessageStyle = 'default';
 
+export function isSimpleMessageStyle() {
+    return messageStyle === "simplified";
+}
+
 export function setMessageStyle(style: MessageStyle) {
     messageStyle = style;
 }
 
 export function optionalAddendum(diag: DiagnosticAddendum) {
-    return messageStyle === 'simplified' ? '' : diag.toString();
+    return isSimpleMessageStyle() ? '' : diag.getString();
 }
 
 const defaultLocale = 'en-us';

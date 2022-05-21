@@ -33,5 +33,8 @@
         "unaccessedVariable": "Variable \"{name}\" is unused",
         "unexpectedIndent": "Unexpected indentation",
         "unreachableCode": "Code is unreachable\nThe logic of your program means this code will never run"
+    },
+    "DiagnosticAddendum": {
+        "tupleSizeMismatch": "Element size mismatch; expected {expected} but received {received}"
     }
 }

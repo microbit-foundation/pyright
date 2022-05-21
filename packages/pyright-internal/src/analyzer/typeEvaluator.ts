@@ -25,7 +25,7 @@ import { DiagnosticRule } from '../common/diagnosticRules';
 import { convertOffsetsToRange } from '../common/positionUtils';
 import { PythonVersion } from '../common/pythonVersion';
 import { TextRange } from '../common/textRange';
-import { Localizer, optionalAddendum } from '../localization/localize';
+import { isSimpleMessageStyle, Localizer, optionalAddendum } from '../localization/localize';
 import {
     ArgumentCategory,
     AssignmentNode,
@@ -3016,16 +3016,19 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
         });
 
         if (!diagAddendum.isEmpty()) {
+            const simple = diagAddendum.getChildren().length === 1 && isSimpleMessageStyle();
             const fileInfo = AnalyzerNodeInfo.getFileInfo(target);
             addDiagnostic(
                 fileInfo.diagnosticRuleSet.reportGeneralTypeIssues,
                 DiagnosticRule.reportGeneralTypeIssues,
-                (target.nodeType === ParseNodeType.List
-                    ? Localizer.Diagnostic.listAssignmentMismatch()
-                    : Localizer.Diagnostic.tupleAssignmentMismatch()
-                ).format({
-                    type: printType(type),
-                }) + diagAddendum.getString(),
+                simple
+                    ? diagAddendum.getChildren()[0].getChildren()[0].getString().trim()
+                    : (target.nodeType === ParseNodeType.List
+                          ? Localizer.Diagnostic.listAssignmentMismatch()
+                          : Localizer.Diagnostic.tupleAssignmentMismatch()
+                      ).format({
+                          type: printType(type),
+                      }) + diagAddendum.getString(),
                 target
             );
         }
