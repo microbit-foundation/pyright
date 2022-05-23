@@ -34,7 +34,7 @@
         "expectedImportAlias": "Missing symbol after \"as\"",
         "expectedImportSymbols": "Expected one or more symbol names after import",
         "expectedIn": "Missing \"in\"",
-        "expectedIndentedBlock": "Indentation missing",
+        "expectedIndentedBlock": "Indent missing",
         "expectedInExpr": "Missing expression after \"in\"",
         "expectedMemberName": "Missing member name after \".\"",
         "expectedModuleName": "Missing module name",
@@ -48,8 +48,8 @@
         "globalRedefinition": "\"{name}\" was already declared global",
         "importResolveFailure": "Module \"{importName}\" could not be found",
         "importSymbolUnknown": "\"{name}\" not found in module \"{moduleName}\"",
-        "inconsistentIndent": "Indentation does not match the previous line",
-        "inconsistentTabs": "Inconsistent use of tabs and spaces in indentation",
+        "inconsistentIndent": "Indent does not match the previous line",
+        "inconsistentTabs": "Inconsistent use of tabs and spaces for indents",
         "instanceMethodSelfParam": "Instance methods need a \"self\" parameter",
         "invalidIdentifierChar": "Invalid character in identifier",
         "invalidTokenChars": "Invalid character \"{text}\" in token",
@@ -84,7 +84,7 @@
         "unaccessedImport": "Import \"{name}\" is unused",
         "unaccessedSymbol": "\"{name}\" is unused",
         "unaccessedVariable": "Variable \"{name}\" is unused",
-        "unexpectedIndent": "Unexpected indentation",
+        "unexpectedIndent": "Unexpected indent",
         "unreachableCode": "Code is unreachable\nThe logic of your program means this code will never run"
     },
     "DiagnosticAddendum": {
