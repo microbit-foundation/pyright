@@ -9,6 +9,7 @@
 import { AnalysisResults } from 'pyright-internal/analyzer/analysis';
 import { ImportResolver } from 'pyright-internal/analyzer/importResolver';
 import { isPythonBinary } from 'pyright-internal/analyzer/pythonPathUtils';
+import { apiDocsRequestType } from 'pyright-internal/apidocsProtocol';
 import { BackgroundAnalysisBase, BackgroundAnalysisRunnerBase } from 'pyright-internal/backgroundAnalysisBase';
 import { InitializationData } from 'pyright-internal/backgroundThreadBase';
 import { CommandController } from 'pyright-internal/commands/commandController';
@@ -23,6 +24,7 @@ import { ProgressReporter } from 'pyright-internal/common/progressReporter';
 import { createWorker, parentPort } from 'pyright-internal/common/workersHost';
 import { LanguageServerBase, ServerSettings, WorkspaceServiceInstance } from 'pyright-internal/languageServerBase';
 import { CodeActionProvider } from 'pyright-internal/languageService/codeActionProvider';
+import { DiagnosticTextSettings } from 'pyright-internal/localization/localize';
 import { TestFileSystem } from 'pyright-internal/tests/harness/vfs/filesystem';
 import { WorkspaceMap } from 'pyright-internal/workspaceMap';
 import {
@@ -37,11 +39,9 @@ import {
     ExecuteCommandParams,
     InitializeParams,
     InitializeResult,
-    WorkDoneProgressServerReporter,
     MarkupKind,
+    WorkDoneProgressServerReporter,
 } from 'vscode-languageserver';
-import { apiDocsRequestType } from 'pyright-internal/apidocsProtocol';
-import { setMessageStyle } from 'pyright-internal/localization/localize';
 
 const maxAnalysisTimeInForeground = { openFilesTimeInMs: 50, noOpenFilesTimeInMs: 200 };
 
@@ -116,18 +116,16 @@ export class PyrightServer extends LanguageServerBase {
         });
     }
 
-    protected override initialize(
+    protected override async initialize(
         params: InitializeParams,
         supportedCommands: string[],
         supportedCodeActions: string[]
-    ): InitializeResult {
+    ): Promise<InitializeResult> {
         const { files } = params.initializationOptions;
         if (typeof files === 'object') {
             this._initialFiles = files as InitialFiles;
             (this._serverOptions.fileSystem as TestFileSystem).apply(files);
         }
-        // Hack to enable simplified error messages (locale is set in super.initialize).
-        setMessageStyle('simplified');
         return super.initialize(params, supportedCommands, supportedCodeActions);
     }
 
@@ -267,7 +265,7 @@ export class PyrightServer extends LanguageServerBase {
 
     createBackgroundAnalysis(): BackgroundAnalysisBase | undefined {
         // Ignore cancellation restriction for now. Needs investigation for browser support.
-        const result = new BrowserBackgroundAnalysis(this.console);
+        const result = new BrowserBackgroundAnalysis(this.console, this.diagnosticTextSettings);
         if (this._initialFiles) {
             result.initializeFileSystem(this._initialFiles);
         }
@@ -348,13 +346,14 @@ export class PyrightServer extends LanguageServerBase {
 }
 
 export class BrowserBackgroundAnalysis extends BackgroundAnalysisBase {
-    constructor(console: ConsoleInterface) {
+    constructor(console: ConsoleInterface, diagnosticTextSettings: DiagnosticTextSettings) {
         super(console);
 
         const initialData: InitializationData = {
             rootDirectory: (global as any).__rootDirectory as string,
             cancellationFolderName: undefined,
             runner: undefined,
+            diagnosticTextSettings,
         };
         const worker = createWorker(initialData);
         this.setup(worker);
@@ -364,10 +363,6 @@ export class BrowserBackgroundAnalysis extends BackgroundAnalysisBase {
 export class BrowserBackgroundAnalysisRunner extends BackgroundAnalysisRunnerBase {
     constructor(initialData: InitializationData) {
         super(parentPort(), initialData);
-
-        // Hack to enable simplified error messages in the background thread.
-        // Ideally we'd route this via initialData.
-        setMessageStyle('simplified');
     }
     createRealFileSystem(): FileSystem {
         return new TestFileSystem(false, {

@@ -14,6 +14,7 @@ import { FileSystem } from './common/fileSystem';
 import { FileSpec, normalizeSlashes } from './common/pathUtils';
 import { createFromRealFileSystem } from './common/realFileSystem';
 import { MessagePort } from './common/workersHost';
+import { DiagnosticTextSettings } from './localization/localize';
 import { PyrightFileSystem } from './pyrightFileSystem';
 import { TestFileSystem } from './tests/harness/vfs/filesystem';
 
@@ -137,6 +138,7 @@ export interface InitializationData {
     cancellationFolderName: string | undefined;
     runner: string | undefined;
     title?: string;
+    diagnosticTextSettings?: DiagnosticTextSettings;
 }
 
 export interface RequestResponse {

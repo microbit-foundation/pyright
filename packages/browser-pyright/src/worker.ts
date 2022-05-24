@@ -4,6 +4,7 @@ import { BrowserBackgroundAnalysisRunner, PyrightServer } from './browser-server
 import { InitializationData } from 'pyright-internal/backgroundThreadBase';
 import { initializeWorkersHost } from 'pyright-internal/common/workersHost';
 import { BrowserWorkersHost } from './browserWorkersHost';
+import { initializeLocalization } from 'pyright-internal/localization/localize';
 
 const ctx: DedicatedWorkerGlobalScope & { app: PyrightServer | BrowserBackgroundAnalysisRunner | undefined } =
     self as any;
@@ -20,7 +21,7 @@ interface BootParams {
 // Ideally we'd use a nested worker for the background thread but no Safari support.
 // Instead non-Worker code must facilitate the connection by creating a worker and
 // passing on a port.
-ctx.addEventListener('message', (e: MessageEvent) => {
+ctx.addEventListener('message', async (e: MessageEvent) => {
     if (e.data.type === 'browser/boot') {
         const params = e.data as BootParams;
         const { mode, port, initialData } = params;
@@ -38,6 +39,7 @@ ctx.addEventListener('message', (e: MessageEvent) => {
                     throw new Error(`Invalid "port" parameter: ${port}`);
                 }
                 initializeWorkersHost(new BrowserWorkersHost(port));
+                await initializeLocalization(initialData.diagnosticTextSettings);
                 ctx.app = new BrowserBackgroundAnalysisRunner(initialData);
                 ctx.app.start();
             } else {

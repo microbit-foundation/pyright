@@ -9,8 +9,6 @@
  * from the same core functionality.
  */
 
-import './common/extensions';
-
 import {
     CallHierarchyIncomingCallsParams,
     CallHierarchyItem,
@@ -71,7 +69,6 @@ import {
     WorkspaceSymbolParams,
 } from 'vscode-languageserver';
 import { attachWorkDone, ResultProgressReporter } from 'vscode-languageserver/lib/common/progress';
-
 import { AnalysisResults } from './analyzer/analysis';
 import { BackgroundAnalysisProgram } from './analyzer/backgroundAnalysisProgram';
 import { ImportResolver } from './analyzer/importResolver';
@@ -93,6 +90,7 @@ import { Diagnostic as AnalyzerDiagnostic, DiagnosticCategory } from './common/d
 import { DiagnosticRule } from './common/diagnosticRules';
 import { FileDiagnostics } from './common/diagnosticSink';
 import { LanguageServiceExtension } from './common/extensibility';
+import './common/extensions';
 import { FileSystem, FileWatcherEventType, FileWatcherProvider } from './common/fileSystem';
 import { Host } from './common/host';
 import { convertPathToUri } from './common/pathUtils';
@@ -106,7 +104,7 @@ import { DefinitionFilter } from './languageService/definitionProvider';
 import { convertToFlatSymbols, WorkspaceSymbolCallback } from './languageService/documentSymbolProvider';
 import { convertHoverResults } from './languageService/hoverProvider';
 import { ReferenceCallback } from './languageService/referencesProvider';
-import { Localizer, setLocaleOverride } from './localization/localize';
+import { DiagnosticTextSettings, initializeLocalization, Localizer } from './localization/localize';
 import { PyrightFileSystem } from './pyrightFileSystem';
 import { WorkspaceMap } from './workspaceMap';
 
@@ -251,6 +249,8 @@ export abstract class LanguageServerBase implements LanguageServerInterface {
         supportsUnnecessaryDiagnosticTag: false,
         completionItemResolveSupportsAdditionalTextEdits: false,
     };
+
+    protected diagnosticTextSettings: DiagnosticTextSettings = {};
 
     // File system abstraction.
     fs: FileSystem;
@@ -482,14 +482,16 @@ export abstract class LanguageServerBase implements LanguageServerInterface {
         );
     }
 
-    protected initialize(
+    protected async initialize(
         params: InitializeParams,
         supportedCommands: string[],
         supportedCodeActions: string[]
-    ): InitializeResult {
-        if (params.locale) {
-            setLocaleOverride(params.locale);
-        }
+    ): Promise<InitializeResult> {
+        this.diagnosticTextSettings = {
+            locale: params.locale,
+            style: params.initializationOptions.diagnosticStyle,
+        };
+        await initializeLocalization(this.diagnosticTextSettings);
 
         this.rootPath = params.rootPath || '';
 

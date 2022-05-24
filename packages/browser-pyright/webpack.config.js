@@ -23,6 +23,7 @@ module.exports = (_, { mode }) => {
             devtoolModuleFilenameTemplate:
                 mode === 'development' ? '../[resource-path]' : monorepoResourceNameMapper('pyright'),
             clean: true,
+            chunkLoading: 'import-scripts',
         },
         devtool: mode === 'development' ? 'source-map' : 'nosources-source-map',
         cache: mode === 'development' ? cacheConfig(__dirname, __filename) : false,

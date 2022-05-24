@@ -9,16 +9,6 @@
 
 import { fail } from '../common/debug';
 
-import enUsStrings = require('./package.nls.en-us.json');
-import deStrings = require('./package.nls.de.json');
-import esStrings = require('./package.nls.es.json');
-import frStrings = require('./package.nls.fr.json');
-import jaStrings = require('./package.nls.ja.json');
-import ruStrings = require('./package.nls.ru.json');
-import zhCnStrings = require('./package.nls.zh-cn.json');
-import zhTwStrings = require('./package.nls.zh-tw.json');
-
-import enUsSimplified = require('./simplified.nls.en-us.json');
 import { DiagnosticAddendum } from '../common/diagnostic';
 
 export class ParameterizedString<T extends {}> {
@@ -49,16 +39,12 @@ function mergeStrings(a: any, b: any): any {
     return result;
 }
 
-type MessageStyle = 'default' | 'simplified';
+type DiagnosticStyle = 'default' | 'simplified';
 
-let messageStyle: MessageStyle = 'default';
+let diagnosticStyle: DiagnosticStyle = 'default';
 
 export function isSimpleMessageStyle() {
-    return messageStyle === "simplified";
-}
-
-export function setMessageStyle(style: MessageStyle) {
-    messageStyle = style;
+    return diagnosticStyle === 'simplified';
 }
 
 export function optionalAddendum(diag: DiagnosticAddendum) {
@@ -69,11 +55,11 @@ const defaultLocale = 'en-us';
 
 type StringLookupMap = { [key: string]: string | StringLookupMap };
 let localizedStrings: StringLookupMap | undefined = undefined;
-let defaultStrings: StringLookupMap = {};
+const defaultStrings: StringLookupMap = require('./package.nls.en-us.json');
 
 function getRawString(key: string): string {
     if (localizedStrings === undefined) {
-        localizedStrings = initialize();
+        localizedStrings = {};
     }
 
     const keyParts = key.split('.');
@@ -100,25 +86,22 @@ function getRawStringFromMap(map: StringLookupMap, keyParts: string[]): string |
     return curObj as string;
 }
 
-function initialize(): StringLookupMap {
-    defaultStrings = loadDefaultStrings();
-    const currentLocale = getLocaleFromEnv();
-    return loadStringsForLocale(currentLocale);
+export interface DiagnosticTextSettings {
+    locale?: string;
+    style?: DiagnosticStyle;
+}
+
+export async function initializeLocalization({ locale, style }: DiagnosticTextSettings = {}): Promise<void> {
+    if (style) {
+        diagnosticStyle = style;
+    }
+    const currentLocale = locale ? locale.toLowerCase() : getLocaleFromEnv();
+    localizedStrings = await loadStringsForLocale(currentLocale);
 }
 
 declare let navigator: { language: string } | undefined;
 
-let localeOverride: string | undefined;
-
-export function setLocaleOverride(locale: string) {
-    localeOverride = locale.toLowerCase();
-}
-
 function getLocaleFromEnv() {
-    if (localeOverride) {
-        return localeOverride;
-    }
-
     try {
         if (navigator?.language) {
             return navigator.language.toLowerCase();
@@ -153,22 +136,8 @@ function getLocaleFromEnv() {
     return defaultLocale;
 }
 
-function loadDefaultStrings(): StringLookupMap {
-    const defaultStrings = loadStringsFromJsonFile(defaultLocale);
-    if (defaultStrings) {
-        return defaultStrings;
-    }
-    console.error('Could not load default strings');
-    return {};
-}
-
-function loadStringsForLocale(locale: string): StringLookupMap {
-    if (locale === defaultLocale) {
-        // No need to load override if we're using the default.
-        return {};
-    }
-
-    let override = loadStringsFromJsonFile(locale);
+async function loadStringsForLocale(locale: string): Promise<StringLookupMap> {
+    let override = await loadStringsFromJsonFile(locale);
     if (override !== undefined) {
         return override;
     }
@@ -177,7 +146,7 @@ function loadStringsForLocale(locale: string): StringLookupMap {
     // general version.
     const localeSplit = locale.split('-');
     if (localeSplit.length > 0 && localeSplit[0]) {
-        override = loadStringsFromJsonFile(localeSplit[0]);
+        override = await loadStringsFromJsonFile(localeSplit[0]);
         if (override !== undefined) {
             return override;
         }
@@ -186,27 +155,15 @@ function loadStringsForLocale(locale: string): StringLookupMap {
     return {};
 }
 
-function loadStringsFromJsonFile(locale: string): StringLookupMap | undefined {
+async function loadStringsFromJsonFile(locale: string): Promise<StringLookupMap | undefined> {
+    let result: StringLookupMap | undefined = undefined;
     switch (locale) {
-        case 'de':
-            return deStrings;
-        case 'en-us':
-            return messageStyle === 'simplified' ? mergeStrings(enUsStrings, enUsSimplified) : enUsStrings;
-        case 'es':
-            return esStrings;
+        case 'en':
+            return (await import('./simplified.nls.en-us.json')).default;
         case 'fr':
-            return frStrings;
-        case 'ja':
-            return jaStrings;
-        case 'ru':
-            return ruStrings;
-        case 'zh-cn':
-            return zhCnStrings;
-        case 'zh-tw':
-            return zhTwStrings;
-        default:
-            return undefined;
+            return (await import('./simplified.nls.fr.json')).default;
     }
+    return result;
 }
 
 export namespace Localizer {
