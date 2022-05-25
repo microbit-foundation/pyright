@@ -27,18 +27,6 @@ export class ParameterizedString<T extends {}> {
     }
 }
 
-function mergeStrings(a: any, b: any): any {
-    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
-    const result: any = {};
-    for (const k of keys) {
-        result[k] = {
-            ...a[k],
-            ...b[k],
-        };
-    }
-    return result;
-}
-
 type DiagnosticStyle = 'default' | 'simplified';
 
 let diagnosticStyle: DiagnosticStyle = 'default';
@@ -156,14 +144,14 @@ async function loadStringsForLocale(locale: string): Promise<StringLookupMap> {
 }
 
 async function loadStringsFromJsonFile(locale: string): Promise<StringLookupMap | undefined> {
-    let result: StringLookupMap | undefined = undefined;
     switch (locale) {
         case 'en':
             return (await import('./simplified.nls.en-us.json')).default;
         case 'fr':
             return (await import('./simplified.nls.fr.json')).default;
+        default:
+            return undefined;
     }
-    return result;
 }
 
 export namespace Localizer {
