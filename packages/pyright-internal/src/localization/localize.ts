@@ -147,8 +147,7 @@ async function loadStringsFromJsonFile(locale: string): Promise<StringLookupMap 
     switch (locale) {
         case 'en':
             return (await import('./simplified.nls.en-us.json')).default;
-        case 'fr':
-            return (await import('./simplified.nls.fr.json')).default;
+        // Add further cases explicitly for code splitting.
         default:
             return undefined;
     }
