@@ -8,7 +8,6 @@
  */
 
 import { fail } from '../common/debug';
-
 import { DiagnosticAddendum } from '../common/diagnostic';
 
 export class ParameterizedString<T extends {}> {
@@ -145,11 +144,9 @@ async function loadStringsForLocale(locale: string): Promise<StringLookupMap> {
 
 async function loadStringsFromJsonFile(locale: string): Promise<StringLookupMap | undefined> {
     switch (locale) {
-        case 'en':
-            return (await import('./simplified.nls.en-us.json')).default;
         // Add further cases explicitly for code splitting.
         default:
-            return undefined;
+            return (await import('./simplified.nls.en-us.json')).default;
     }
 }
 
