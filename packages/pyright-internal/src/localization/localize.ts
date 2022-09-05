@@ -145,6 +145,19 @@ async function loadStringsForLocale(locale: string): Promise<StringLookupMap> {
 async function loadStringsFromJsonFile(locale: string): Promise<StringLookupMap | undefined> {
     switch (locale) {
         // Add further cases explicitly for code splitting.
+        // The need for this might be worth revisiting.
+        case 'fr':
+            return (await import('./simplified.nls.fr.json')).default;
+        case 'es-es':
+            return (await import('./simplified.nls.es-es.json')).default;
+        case 'ja':
+            return (await import('./simplified.nls.ja.json')).default;
+        case 'ko':
+            return (await import('./simplified.nls.ko.json')).default;
+        case 'zh-cn':
+            return (await import('./simplified.nls.zh-cn.json')).default;
+        case 'zh-tw':
+            return (await import('./simplified.nls.zh-tw.json')).default;
         default:
             return (await import('./simplified.nls.en-us.json')).default;
     }
