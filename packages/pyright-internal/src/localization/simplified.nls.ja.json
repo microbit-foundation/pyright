@@ -6,7 +6,7 @@
         "argAssignmentParamFunction": "引数がパラメータ「{paramName}」のパラメータ型と一致しません",
         "argMissingForParam": "パラメータ {name} の引数がありません",
         "argMissingForParams": "パラメータ {names} の引数がありません",
-        "argMorePositionalExpectedCount": "あと{expected}個の位置引数を期待していました",
+        "argMorePositionalExpectedCount": "あと {expected} 個の位置引数を期待していました",
         "argMorePositionalExpectedOne": "あともう一つの位置引数を期待していました",
         "argPositional": "位置引数を期待していました",
         "argPositionalExpectedOne": "一つの位置引数を期待していました",
@@ -32,7 +32,7 @@
         "expectedIdentifier": "識別子がありません",
         "expectedImport": "「import」がありません",
         "expectedImportAlias": "「as」の後に記号がありません",
-        "expectedImportSymbols": "importの後に1つ以上の記号名を期待していました",
+        "expectedImportSymbols": "インポート後に1つ以上の記号名を期待していました",
         "expectedIn": "「in」がありません",
         "expectedIndentedBlock": "インデントがありません",
         "expectedInExpr": "「in」の後に式がありません",
@@ -66,16 +66,16 @@
         "obscuredMethodDeclaration": "メソッド「{name}」は同じ名前の別の宣言と衝突しています",
         "obscuredParameterDeclaration": "パラメータ「{name}」は同じ名前の別の宣言と衝突しています",
         "obscuredVariableDeclaration": "宣言「{name}」は同じ名前の別の宣言と衝突しています",
-        "paramAfterKwargsParam": "パラメータは「**」パラメータに続けることができません",
+        "paramAfterKwargsParam": "パラメータは「**」パラメータに続くことができません",
         "paramAlreadyAssigned": "パラメータ「{name}」は既に割り当てられています",
-        "paramNameMissing": "「{name}」という名前のパラメータはありません",
-        "positionArgAfterNamedArg": "位置変数はキーワード引数の後に現せません",
+        "paramNameMissing": "「{name}」というパラメータ名はありません",
+        "positionArgAfterNamedArg": "位置変数はキーワード引数の後に続くことができません",
         "returnOutsideFunction": "「return」は関数内でのみ使用できます",
         "stringUnsupportedEscape": "文字列リテラル内にサポートされないエスケープシーケンスがあります",
         "stringUnterminated": "文字列が閉じられていません（引用符がありません）",
         "symbolIsUndefined": "「{name}」が定義されていません",
         "trailingCommaInFromImport": "末尾のカンマは括弧で囲まれていないと許可されません",
-        "tupleIndexOutOfRange": "インデックス{index}は型{type}の範囲外です",
+        "tupleIndexOutOfRange": "インデックス {index} は型 {type} の範囲外です",
         "typeNotIterable": "型は反復できません",
         "typeNotSupportBinaryOperator": "演算子「{operator}」はこの型の組み合わせではサポートされていません",
         "typeNotSupportBinaryOperatorBidirectional": "演算子「{operator}」はこの型の組み合わせではサポートされていません",
@@ -88,6 +88,6 @@
         "unreachableCode": "コードに到達できません\nプログラムのロジックによるとこのコードは実行されません"
     },
     "DiagnosticAddendum": {
-        "tupleSizeMismatch": "要素のサイズが一致しません。予期していたのは{expected}でしたが、受信したのは{received}でした"
+        "tupleSizeMismatch": "要素のサイズが一致しません。予期していたのは {expected} でしたが、受信したのは {received} でした"
     }
 }
