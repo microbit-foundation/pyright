@@ -2245,6 +2245,10 @@ export class Program {
         // Don't bother doing this until we hit this point because the heap usage may not
         // drop immediately after we empty the cache due to garbage collection timing.
         if (typeCacheSize > 750000 || this._parsedFileCount > 1000) {
+            // Stubbed out for browser implementation as a Web Worker where process.memoryUsage() is not available.
+            // self.performance.memory is not available inside the Web Worker and cannot be used as an alternative.
+            // Highly unlikely to occur in practice.
+            return 1;
             const memoryUsage = process.memoryUsage();
 
             // If we use more than 90% of the available heap size, avoid a crash
@@ -2261,6 +2265,8 @@ export class Program {
                 this._parsedFileCount = 0;
             }
         }
+        // Stubbed return value to prevent "Not all code paths return a value" TS warning.
+        return 0;
     }
 
     // Discards all cached parse results and file contents to free up memory.
