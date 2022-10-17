@@ -154,6 +154,8 @@ async function loadStringsFromJsonFile(locale: string): Promise<StringLookupMap 
             return (await import('./simplified.nls.ja.json')).default;
         case 'ko':
             return (await import('./simplified.nls.ko.json')).default;
+        case 'nl':
+            return (await import('./simplified.nls.nl.json')).default;
         case 'zh-cn':
             return (await import('./simplified.nls.zh-cn.json')).default;
         case 'zh-tw':
