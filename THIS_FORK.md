@@ -31,7 +31,7 @@ We've prioritised keeping the fork maintainable by minimising change over clean 
 
 ## Changes
 
-The key change is to replace the file system abstraction Pyright uses to read from disk. We took a very simple approach to this, simply swapping in the in-memory test file system class that is used in Pyrights's test suite. We then added some custom messages to allow us to manipulate that file system. This whole mechanism might be worth revisiting and comparing against tsserver's solution.
+The key change is to replace the file system abstraction Pyright uses to read from disk. We took a very simple approach to this, simply swapping in the in-memory test file system class that is used in Pyright's test suite. We then added some custom messages to allow us to manipulate that file system. This whole mechanism might be worth revisiting and comparing against tsserver's solution.
 
 Pyright has a foreground and background thread architecture. They communicate via Node's worker_threads module. We've added an adapter so we can alternatively use the
 browser postMessage API. Nested Web Worker support [was only recently added to Safari](https://bugs.webkit.org/show_bug.cgi?id=22723), so there's some extra complexity to allow Pyright to request creation of Workers from the browser main thread. The abstraction should still work in the worker_thread scenario but has not been tested in the VS Code / Node scenario. A closer review of what each thread is responsible for and whether this is the best setup for a web build would be worthwhile — we just focussed on getting it running.
