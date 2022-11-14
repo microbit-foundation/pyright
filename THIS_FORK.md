@@ -13,7 +13,15 @@ We don't have plans or the resource to maintain these for usecases other than th
 
 We added a browser-pyright package alongside the CLI and VS Code extension packages. Similarly to the CLI, it's a Webpack build, but one that stubs out Node-only features. The build outputs a Web Worker.
 
-This is not currently published anywhere. If you want to use it then you'll will need to build it yourself.
+This is not currently published anywhere. If you want to use it then you will need to build it yourself:
+
+```bash
+$ git clone https://github.com/microbit-foundation/pyright.git
+$ cd pyright
+$ npm install
+$ cd packages/browser-pyright
+$ npm run build
+```
 
 Like CLI and VS Code packages, browser-pyright depends on the internals package (which contains nearly all Pyright's code).
 
