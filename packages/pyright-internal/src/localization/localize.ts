@@ -146,6 +146,8 @@ async function loadStringsFromJsonFile(locale: string): Promise<StringLookupMap 
     switch (locale) {
         // Add further cases explicitly for code splitting.
         // The need for this might be worth revisiting.
+        case 'ca':
+            return (await import('./simplified.nls.ca.json')).default;
         case 'fr':
             return (await import('./simplified.nls.fr.json')).default;
         case 'es-es':
