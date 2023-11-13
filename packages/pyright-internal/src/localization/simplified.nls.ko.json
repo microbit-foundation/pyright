@@ -11,7 +11,7 @@
         "argPositional": "위치 인자가 필요합니다.",
         "argPositionalExpectedOne": "위치 인자가 1개 필요합니다.",
         "assignmentTargetExpr": "수학식은 값을 지정하는 대상이 될 수 없습니다.",
-        "booleanIsLowerCase": "변수 '{name}'은(는) 정의되지 않았습니다. '{booleanName}' 변수를 쓰려 했나요?",
+        "booleanIsLowerCase": "변수 \"{name}\"은(는) 정의되지 않았습니다. \"{booleanName}\" 변수를 쓰려 했나요?",
         "breakOutsideLoop": "\"break\"는 \"while\" 또는 \"for\" 루프에서만 사용될 수 있음",
         "constructorNoArgs": "\"{type}\" 생성자에는 인자가 필요하지 않음",
         "continueOutsideLoop": "\"continue\"는 \"while\" 또는 \"for\" 루프에서만 사용될 수 있음",
