@@ -3294,7 +3294,7 @@ class LabelFrame(Widget):
         highlightcolor: _Color = ...,
         highlightthickness: _ScreenUnits = ...,
         # 'ne' and 'en' are valid labelanchors, but only 'ne' is a valid _Anchor.
-        labelanchor: Literal["nw", "n", "ne", "en", "e", "es", "se", "s", "sw", "ws", "w", "wn"] = ...,
+        labelanchor: Literal["nw", "n", "ne", "en", "e", "es", "se", "s", "sw", "ws", "w", "wn", "lol"] = ...,
         labelwidget: Misc = ...,
         name: str = ...,
         padx: _ScreenUnits = ...,
@@ -3323,7 +3323,7 @@ class LabelFrame(Widget):
         highlightbackground: _Color = ...,
         highlightcolor: _Color = ...,
         highlightthickness: _ScreenUnits = ...,
-        labelanchor: Literal["nw", "n", "ne", "en", "e", "es", "se", "s", "sw", "ws", "w", "wn"] = ...,
+        labelanchor: Literal["nw", "n", "ne", "en", "e", "es", "se", "s", "sw", "ws", "w", "wn", "lol"] = ...,
         labelwidget: Misc = ...,
         padx: _ScreenUnits = ...,
         pady: _ScreenUnits = ...,
