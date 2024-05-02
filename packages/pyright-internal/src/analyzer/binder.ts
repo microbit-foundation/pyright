@@ -111,6 +111,7 @@ import {
     VariableDeclaration,
 } from './declaration';
 import { ImplicitImport, ImportResult, ImportType } from './importResult';
+import { device, usesMicrobitV2Api } from './microbitUtils';
 import * as ParseTreeUtils from './parseTreeUtils';
 import { ParseTreeWalker } from './parseTreeWalker';
 import { NameBindingType, Scope, ScopeType } from './scope';
@@ -384,6 +385,19 @@ export class Binder extends ParseTreeWalker {
                     node
                 );
             }
+        }
+
+        // Add warning diagnostic for V2 micro:bit modules.
+        if (usesMicrobitV2Api(importResult.importName)) {
+            this._addDiagnostic(
+                this._fileInfo.diagnosticRuleSet.reportMicrobitV2ApiUse,
+                DiagnosticRule.reportMicrobitV2ApiUse,
+                Localizer.Diagnostic.microbitV2ModuleUse().format({
+                    moduleName: importResult.importName,
+                    device,
+                }),
+                node
+            );
         }
 
         return true;

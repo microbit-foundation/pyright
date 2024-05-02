@@ -106,6 +106,7 @@ import {
     isPossibleTypeAliasDeclaration,
 } from './declarationUtils';
 import { applyFunctionTransform } from './functionTransform';
+import { maybeAddMicrobitVersionWarning } from './microbitUtils';
 import { createNamedTupleType } from './namedTuples';
 import * as ParseTreeUtils from './parseTreeUtils';
 import { assignTypeToPatternTargets, narrowTypeBasedOnPattern } from './patternMatching';
@@ -3854,6 +3855,10 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
             type = validateTypeVarUsage(node, type, flags);
         }
 
+        // Maybe add warning diagnostic for V2 micro:bit module members
+        // (functions) where these are imported.
+        maybeAddMicrobitVersionWarning(type, node, addDiagnostic, AnalyzerNodeInfo.getFileInfo(node).diagnosticRuleSet.reportMicrobitV2ApiUse);
+
         return { type, node, isIncomplete };
     }
 
@@ -4526,6 +4531,12 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                         isAsymmetricDescriptor = true;
                     }
                 }
+
+                if (type) {
+                    // Maybe add warning diagnostic for V2 micro:bit class methods.
+                    maybeAddMicrobitVersionWarning(type, node, addDiagnostic, AnalyzerNodeInfo.getFileInfo(node).diagnosticRuleSet.reportMicrobitV2ApiUse);
+                }
+
                 break;
             }
 
@@ -4614,6 +4625,9 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                         type = evaluatorOptions.evaluateUnknownImportsAsAny ? AnyType.create() : UnknownType.create();
                     }
                 }
+
+                // Maybe add warning diagnostic for V2 micro:bit modules or module members.
+                maybeAddMicrobitVersionWarning(type, node.parent ?? node, addDiagnostic, fileInfo.diagnosticRuleSet.reportMicrobitV2ApiUse, memberName);
                 break;
             }
 
@@ -16202,6 +16216,10 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                 symbolType = UnknownType.create();
             }
         }
+
+        // Maybe add warning diagnostic for V2 micro:bit module
+        // members for `from module import member`.
+        maybeAddMicrobitVersionWarning(symbolType, node.name, addDiagnostic, fileInfo.diagnosticRuleSet.reportMicrobitV2ApiUse);
 
         assignTypeToNameNode(aliasNode, symbolType, /* isIncomplete */ false);
         writeTypeCache(node, symbolType, EvaluatorFlags.None, /* isIncomplete */ false);

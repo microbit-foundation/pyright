@@ -521,6 +521,18 @@ export namespace Localizer {
             );
         export const methodReturnsNonObject = () =>
             new ParameterizedString<{ name: string }>(getRawString('Diagnostic.methodReturnsNonObject'));
+        export const microbitV2ClassMethodUse = () =>
+            new ParameterizedString<{ methodName: string; className: string; device: string }>(
+                getRawString('Diagnostic.microbitV2ClassMethodUse')
+            );
+        export const microbitV2ModuleMemberUse = () =>
+            new ParameterizedString<{ name: string; moduleName: string; device: string }>(
+                getRawString('Diagnostic.microbitV2ModuleMemberUse')
+            );
+        export const microbitV2ModuleUse = () =>
+            new ParameterizedString<{ moduleName: string; device: string }>(
+                getRawString('Diagnostic.microbitV2ModuleUse')
+            );
         export const missingProtocolMembers = () => getRawString('Diagnostic.missingProtocolMembers');
         export const missingSuperCall = () =>
             new ParameterizedString<{ methodName: string }>(getRawString('Diagnostic.missingSuperCall'));
