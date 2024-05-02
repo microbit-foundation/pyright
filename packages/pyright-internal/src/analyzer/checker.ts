@@ -1210,6 +1210,7 @@ export class Checker extends ParseTreeWalker {
     override visitName(node: NameNode) {
         // Determine if we should log information about private usage.
         this._conditionallyReportPrivateUsage(node);
+        this._reportMicrobitV2Name(node);
 
         // Determine if the name is possibly unbound.
         if (!this._isUnboundCheckSuppressed) {
@@ -1238,6 +1239,7 @@ export class Checker extends ParseTreeWalker {
     override visitMemberAccess(node: MemberAccessNode) {
         this._evaluator.getType(node);
         this._conditionallyReportPrivateUsage(node.memberName);
+        this._reportMicrobitV2Name(node.memberName);
 
         // Walk the leftExpression but not the memberName.
         this.walk(node.leftExpression);
@@ -1247,6 +1249,8 @@ export class Checker extends ParseTreeWalker {
 
     override visitImportAs(node: ImportAsNode): boolean {
         this._evaluator.evaluateTypesForStatement(node);
+        this._reportMicrobitV2Name(node.module.nameParts[0]);
+
         return false;
     }
 
@@ -1254,6 +1258,8 @@ export class Checker extends ParseTreeWalker {
         if (!node.isWildcardImport) {
             node.imports.forEach((importAs) => {
                 this._evaluator.evaluateTypesForStatement(importAs);
+
+                this._reportMicrobitV2Name(importAs.name);
             });
         } else {
             const importInfo = AnalyzerNodeInfo.getImportInfo(node.module);
@@ -1272,6 +1278,7 @@ export class Checker extends ParseTreeWalker {
                 );
             }
         }
+        this._reportMicrobitV2Name(node.module.nameParts[0]);
 
         return false;
     }
@@ -4937,4 +4944,82 @@ export class Checker extends ParseTreeWalker {
             }
         });
     }
+
+    private _reportMicrobitV2Name(node: NameNode) {
+        const declarations = this._evaluator.getDeclarationsForNameNode(node);
+        let primaryDeclaration =
+            declarations && declarations.length > 0 ? declarations[declarations.length - 1] : undefined;
+        if (!primaryDeclaration || primaryDeclaration.node === node) {
+            return;
+        }
+        if (primaryDeclaration.type === DeclarationType.Alias) {
+            primaryDeclaration = this._evaluator.resolveAliasDeclaration(
+                primaryDeclaration,
+                /* resolveLocalNames */ true
+            );
+        }
+        if (primaryDeclaration && primaryDeclaration.node !== node) {
+            switch (primaryDeclaration.type) {
+                case DeclarationType.Class: /* fallthrough */
+                case DeclarationType.Function:
+                    return this._reportMicrobitVersionApiUnsupportedCheck(
+                        node,
+                        primaryDeclaration.moduleName,
+                        primaryDeclaration.node.name.value
+                    );
+                    break;
+                case DeclarationType.Variable:
+                    if (primaryDeclaration.node.nodeType === ParseNodeType.Name) {
+                        return this._reportMicrobitVersionApiUnsupportedCheck(
+                            node,
+                            primaryDeclaration.moduleName,
+                            primaryDeclaration.node.value
+                        );
+                    }
+                    break;
+            }
+        }
+
+        const type = this._evaluator.getType(node);
+        if (type && isModule(type)) {
+            return this._reportMicrobitVersionApiUnsupportedCheck(node, type.moduleName);
+        }
+    }
+
+    private _reportMicrobitVersionApiUnsupportedCheck(node: NameNode, moduleName: string, name?: string) {
+        const fullName = moduleName + (name ? '.' + name : '');
+        if (this._microbitV2OnlyNames.has(moduleName)) {
+            this._reportMicrobitVersionApiUnsupportedDiagnostic(node, fullName);
+        } else if (this._microbitV2OnlyNames.has(fullName)) {
+            this._reportMicrobitVersionApiUnsupportedDiagnostic(node, fullName);
+        }
+    }
+
+    private _reportMicrobitVersionApiUnsupportedDiagnostic(node: NameNode, name: string): void {
+        this._evaluator.addDiagnostic(
+            this._fileInfo.diagnosticRuleSet.reportMicrobitVersionApiUnsupported,
+            DiagnosticRule.reportMicrobitVersionApiUnsupported,
+            Localizer.Diagnostic.microbitVersionApiUnsupported().format({
+                name: name.replace(/^microbit\./, ''),
+                device: 'micro:bit V1',
+            }),
+            node
+        );
+    }
+
+    private _microbitV2OnlyNames = new Set([
+        'log',
+        'microbit.microphone',
+        'microbit.speaker',
+        'power',
+        'microbit.run_every',
+        'microbit.set_volume',
+        'microbit.Sound',
+        'microbit.SoundEvent',
+        'microbit.pin_logo',
+        'microbit.pin_speaker',
+        'microbit.audio.SoundEffect',
+        'neopixel.fill',
+        'neopixel.write',
+    ]);
 }
