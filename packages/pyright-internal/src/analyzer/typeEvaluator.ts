@@ -4627,7 +4627,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                 }
 
                 // Maybe add warning diagnostic for V2 micro:bit modules or module members.
-                maybeAddMicrobitVersionWarning(type, node.parent ?? node, addDiagnostic, memberName);
+                maybeAddMicrobitVersionWarning(type, node, addDiagnostic, memberName);
                 break;
             }
 

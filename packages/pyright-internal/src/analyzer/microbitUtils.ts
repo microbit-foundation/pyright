@@ -5,7 +5,7 @@ import { Localizer } from '../localization/localize';
 import { ParseNode } from '../parser/parseNodes';
 import { AnalyzerFileInfo } from './analyzerFileInfo';
 import * as AnalyzerNodeInfo from './analyzerNodeInfo';
-import { isFunction, isModule, isOverloadedFunction, Type } from './types';
+import { isClass, isFunction, isModule, isOverloadedFunction, Type } from './types';
 
 type AddDiagnostic = (
     diagLevel: DiagnosticLevel,
@@ -17,7 +17,7 @@ type AddDiagnostic = (
 export const device = 'micro:bit V1';
 
 function getNames(type: Type) {
-    if (isFunction(type)) {
+    if (isFunction(type) || isClass(type)) {
         return {
             moduleName: type.details.moduleName,
             name: type.details.name,
@@ -39,6 +39,7 @@ function usesMicrobitV2Api(moduleName: string, name?: string) {
     return (
         ['log', 'microphone', 'speaker', 'power'].includes(moduleName) ||
         (moduleName === 'microbit' && name === 'run_every') ||
+        (moduleName === 'microbit.audio' && name === 'SoundEffect') ||
         (moduleName === 'neopixel' && ['fill', 'write'].includes(name ?? ''))
     );
 }
@@ -126,9 +127,8 @@ export function maybeAddMicrobitVersionWarning(
             return;
         }
 
-        if (isFunction(type) || isOverloadedFunction(type)) {
-            addModuleMemberVersionWarning(addDiagnostic, name, moduleName, node);
-        }
+        // The type must be a function, overloaded function or class at this point.
+        addModuleMemberVersionWarning(addDiagnostic, name, moduleName, node);
     }
 }
 
