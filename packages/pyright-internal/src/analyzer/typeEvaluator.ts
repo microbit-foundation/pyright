@@ -3857,7 +3857,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
 
         // Maybe add warning diagnostic for V2 micro:bit module members
         // (functions) where these are imported.
-        maybeAddMicrobitVersionWarning(type, node, addDiagnostic, AnalyzerNodeInfo.getFileInfo(node).diagnosticRuleSet.reportMicrobitV2ApiUse);
+        maybeAddMicrobitVersionWarning(type, node, addDiagnostic);
 
         return { type, node, isIncomplete };
     }
@@ -4534,7 +4534,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
 
                 if (type) {
                     // Maybe add warning diagnostic for V2 micro:bit class methods.
-                    maybeAddMicrobitVersionWarning(type, node, addDiagnostic, AnalyzerNodeInfo.getFileInfo(node).diagnosticRuleSet.reportMicrobitV2ApiUse);
+                    maybeAddMicrobitVersionWarning(type, node, addDiagnostic);
                 }
 
                 break;
@@ -4627,7 +4627,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
                 }
 
                 // Maybe add warning diagnostic for V2 micro:bit modules or module members.
-                maybeAddMicrobitVersionWarning(type, node.parent ?? node, addDiagnostic, fileInfo.diagnosticRuleSet.reportMicrobitV2ApiUse, memberName);
+                maybeAddMicrobitVersionWarning(type, node.parent ?? node, addDiagnostic, memberName);
                 break;
             }
 
@@ -16219,7 +16219,7 @@ export function createTypeEvaluator(importLookup: ImportLookup, evaluatorOptions
 
         // Maybe add warning diagnostic for V2 micro:bit module
         // members for `from module import member`.
-        maybeAddMicrobitVersionWarning(symbolType, node.name, addDiagnostic, fileInfo.diagnosticRuleSet.reportMicrobitV2ApiUse);
+        maybeAddMicrobitVersionWarning(symbolType, node.name, addDiagnostic);
 
         assignTypeToNameNode(aliasNode, symbolType, /* isIncomplete */ false);
         writeTypeCache(node, symbolType, EvaluatorFlags.None, /* isIncomplete */ false);

@@ -3,6 +3,8 @@ import { Diagnostic } from '../common/diagnostic';
 import { DiagnosticRule } from '../common/diagnosticRules';
 import { Localizer } from '../localization/localize';
 import { ParseNode } from '../parser/parseNodes';
+import { AnalyzerFileInfo } from './analyzerFileInfo';
+import * as AnalyzerNodeInfo from './analyzerNodeInfo';
 import { isFunction, isModule, isOverloadedFunction, Type } from './types';
 
 type AddDiagnostic = (
@@ -33,7 +35,7 @@ function getNames(type: Type) {
     };
 }
 
-export function usesMicrobitV2Api(moduleName: string, name?: string) {
+function usesMicrobitV2Api(moduleName: string, name?: string) {
     return (
         ['log', 'microphone', 'speaker', 'power'].includes(moduleName) ||
         (moduleName === 'microbit' && name === 'run_every') ||
@@ -41,14 +43,18 @@ export function usesMicrobitV2Api(moduleName: string, name?: string) {
     );
 }
 
-function addModuleVersionWarning(
-    addDiagnostic: AddDiagnostic,
-    diagLevel: DiagnosticLevel,
-    moduleName: string,
-    node: ParseNode
-) {
+function getFileInfo(node: ParseNode): AnalyzerFileInfo {
+    return AnalyzerNodeInfo.getFileInfo(node);
+}
+
+function getDiagLevel(fileInfo: AnalyzerFileInfo): DiagnosticLevel {
+    return fileInfo.diagnosticRuleSet.reportMicrobitV2ApiUse;
+}
+
+function addModuleVersionWarning(addDiagnostic: AddDiagnostic, moduleName: string, node: ParseNode) {
+    const fileInfo = getFileInfo(node);
     addDiagnostic(
-        diagLevel,
+        getDiagLevel(fileInfo),
         DiagnosticRule.reportMicrobitV2ApiUse,
         Localizer.Diagnostic.microbitV2ModuleUse().format({
             moduleName: moduleName,
@@ -60,13 +66,13 @@ function addModuleVersionWarning(
 
 function addModuleMemberVersionWarning(
     addDiagnostic: AddDiagnostic,
-    diagLevel: DiagnosticLevel,
     name: string,
     moduleName: string,
     node: ParseNode
 ) {
+    const fileInfo = getFileInfo(node);
     addDiagnostic(
-        diagLevel,
+        getDiagLevel(fileInfo),
         DiagnosticRule.reportMicrobitV2ApiUse,
         Localizer.Diagnostic.microbitV2ModuleMemberUse().format({
             name,
@@ -79,13 +85,13 @@ function addModuleMemberVersionWarning(
 
 function addClassMethodVersionWarning(
     addDiagnostic: AddDiagnostic,
-    diagLevel: DiagnosticLevel,
     methodName: string,
     className: string,
     node: ParseNode
 ) {
+    const fileInfo = getFileInfo(node);
     addDiagnostic(
-        diagLevel,
+        getDiagLevel(fileInfo),
         DiagnosticRule.reportMicrobitV2ApiUse,
         Localizer.Diagnostic.microbitV2ClassMethodUse().format({
             methodName,
@@ -100,12 +106,11 @@ export function maybeAddMicrobitVersionWarning(
     type: Type,
     node: ParseNode,
     addDiagnostic: AddDiagnostic,
-    diagLevel: DiagnosticLevel,
     memberName?: string
 ) {
     if (isModule(type)) {
         if (usesMicrobitV2Api(type.moduleName, memberName)) {
-            addModuleVersionWarning(addDiagnostic, diagLevel, type.moduleName, node);
+            addModuleVersionWarning(addDiagnostic, type.moduleName, node);
         }
     }
 
@@ -117,12 +122,20 @@ export function maybeAddMicrobitVersionWarning(
     if (usesMicrobitV2Api(moduleName, name)) {
         if (isFunction(type) && type.boundToType) {
             const className = type.boundToType?.details.name;
-            addClassMethodVersionWarning(addDiagnostic, diagLevel, name, className, node);
+            addClassMethodVersionWarning(addDiagnostic, name, className, node);
             return;
         }
 
         if (isFunction(type) || isOverloadedFunction(type)) {
-            addModuleMemberVersionWarning(addDiagnostic, diagLevel, name, moduleName, node);
+            addModuleMemberVersionWarning(addDiagnostic, name, moduleName, node);
         }
+    }
+}
+
+// Required as passing in this._addDiagnostic results in errors.
+// See binder.ts for use.
+export function maybeAddMicrobitVersionWarningBinderWrapper(moduleName: string, callback: any) {
+    if (usesMicrobitV2Api(moduleName)) {
+        callback();
     }
 }

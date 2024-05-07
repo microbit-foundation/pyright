@@ -111,7 +111,7 @@ import {
     VariableDeclaration,
 } from './declaration';
 import { ImplicitImport, ImportResult, ImportType } from './importResult';
-import { device, usesMicrobitV2Api } from './microbitUtils';
+import { device, maybeAddMicrobitVersionWarningBinderWrapper } from './microbitUtils';
 import * as ParseTreeUtils from './parseTreeUtils';
 import { ParseTreeWalker } from './parseTreeWalker';
 import { NameBindingType, Scope, ScopeType } from './scope';
@@ -388,7 +388,7 @@ export class Binder extends ParseTreeWalker {
         }
 
         // Add warning diagnostic for V2 micro:bit modules.
-        if (usesMicrobitV2Api(importResult.importName)) {
+        maybeAddMicrobitVersionWarningBinderWrapper(importResult.importName, () =>
             this._addDiagnostic(
                 this._fileInfo.diagnosticRuleSet.reportMicrobitV2ApiUse,
                 DiagnosticRule.reportMicrobitV2ApiUse,
@@ -397,8 +397,8 @@ export class Binder extends ParseTreeWalker {
                     device,
                 }),
                 node
-            );
-        }
+            )
+        );
 
         return true;
     }
