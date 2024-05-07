@@ -18,7 +18,7 @@ module.exports = (_, { mode }) => {
         },
         output: {
             filename: '[name]-main-[contenthash].worker.js',
-            chunkFilename: 'pyright-locale-[id]-[contenthash].worker.js',
+            chunkFilename: 'pyright-locale-[name]-[id]-[contenthash].worker.js',
             path: outPath,
             devtoolModuleFilenameTemplate:
                 mode === 'development' ? '../[resource-path]' : monorepoResourceNameMapper('pyright'),

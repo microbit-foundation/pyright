@@ -147,27 +147,27 @@ async function loadStringsFromJsonFile(locale: string): Promise<StringLookupMap 
         // Add further cases explicitly for code splitting.
         // The need for this might be worth revisiting.
         case 'ca':
-            return (await import('./simplified.nls.ca.json')).default;
+            return (await import(/* webpackChunkName: "ca" */ './simplified.nls.ca.json')).default;
         case 'de':
-            return (await import('./simplified.nls.de.json')).default;
+            return (await import(/* webpackChunkName: "de" */ './simplified.nls.de.json')).default;
         case 'fr':
-            return (await import('./simplified.nls.fr.json')).default;
+            return (await import(/* webpackChunkName: "fr" */ './simplified.nls.fr.json')).default;
         case 'es-es':
-            return (await import('./simplified.nls.es-es.json')).default;
+            return (await import(/* webpackChunkName: "es-es" */ './simplified.nls.es-es.json')).default;
         case 'ja':
-            return (await import('./simplified.nls.ja.json')).default;
+            return (await import(/* webpackChunkName: "ja" */ './simplified.nls.ja.json')).default;
         case 'ko':
-            return (await import('./simplified.nls.ko.json')).default;
+            return (await import(/* webpackChunkName: "ko" */ './simplified.nls.ko.json')).default;
         case 'nl':
-            return (await import('./simplified.nls.nl.json')).default;
+            return (await import(/* webpackChunkName: "nl" */ './simplified.nls.nl.json')).default;
         case 'zh-cn':
-            return (await import('./simplified.nls.zh-cn.json')).default;
+            return (await import(/* webpackChunkName: "zh-cn" */ './simplified.nls.zh-cn.json')).default;
         case 'zh-tw':
-            return (await import('./simplified.nls.zh-tw.json')).default;
+            return (await import(/* webpackChunkName: "zh-tw" */ './simplified.nls.zh-tw.json')).default;
         case 'lol':
-            return (await import('./simplified.nls.lol.json')).default;
+            return (await import(/* webpackChunkName: "lol" */ './simplified.nls.lol.json')).default;
         default:
-            return (await import('./simplified.nls.en-us.json')).default;
+            return (await import(/* webpackChunkName: "en" */ './simplified.nls.en-us.json')).default;
     }
 }
 
