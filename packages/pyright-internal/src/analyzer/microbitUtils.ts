@@ -2,7 +2,7 @@ import { DiagnosticLevel } from '../common/configOptions';
 import { Diagnostic } from '../common/diagnostic';
 import { DiagnosticRule } from '../common/diagnosticRules';
 import { Localizer } from '../localization/localize';
-import { ParseNode } from '../parser/parseNodes';
+import { NameNode, ParseNode } from '../parser/parseNodes';
 import { AnalyzerFileInfo } from './analyzerFileInfo';
 import * as AnalyzerNodeInfo from './analyzerNodeInfo';
 import { isClass, isFunction, isModule, isOverloadedFunction, Type } from './types';
@@ -37,8 +37,9 @@ function getNames(type: Type) {
 
 function usesMicrobitV2Api(moduleName: string, name?: string) {
     return (
-        ['log', 'microphone', 'speaker', 'power'].includes(moduleName) ||
-        (moduleName === 'microbit' && name === 'run_every') ||
+        ['log', 'microbit.microphone', 'microbit.speaker', 'power'].includes(moduleName) ||
+        (moduleName === 'microbit' &&
+            ['run_every', 'set_volume', 'Sound', 'pin_logo', 'pin_speaker'].includes(name ?? '')) ||
         (moduleName === 'microbit.audio' && name === 'SoundEffect') ||
         (moduleName === 'neopixel' && ['fill', 'write'].includes(name ?? ''))
     );
@@ -115,9 +116,18 @@ export function maybeAddMicrobitVersionWarning(
         }
     }
 
-    const { moduleName, name } = getNames(type);
+    const moduleName = getNames(type).moduleName;
+    let name = getNames(type).name;
     if (!moduleName && !name) {
         return;
+    }
+
+    // Special case pin_logo and pin_speaker.
+    if (name === 'MicroBitAnalogDigitalPin' && (node as NameNode).value === 'pin_speaker') {
+        name = 'pin_speaker';
+    }
+    if (name === 'MicroBitTouchPin' && (node as NameNode).value === 'pin_logo') {
+        name = 'pin_logo';
     }
 
     if (usesMicrobitV2Api(moduleName, name)) {
