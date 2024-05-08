@@ -144,7 +144,7 @@ export function maybeAddMicrobitVersionWarning(
 
 // Required as passing in this._addDiagnostic results in errors.
 // See binder.ts for use.
-export function maybeAddMicrobitVersionWarningBinderWrapper(moduleName: string, callback: any) {
+export function maybeAddMicrobitVersionWarningBinderWrapper(moduleName: string, callback: () => void) {
     if (usesMicrobitV2Api(moduleName)) {
         callback();
     }
