@@ -39,7 +39,7 @@ function usesMicrobitV2Api(moduleName: string, name?: string) {
     return (
         ['log', 'microbit.microphone', 'microbit.speaker', 'power'].includes(moduleName) ||
         (moduleName === 'microbit' &&
-            ['run_every', 'set_volume', 'Sound', 'pin_logo', 'pin_speaker'].includes(name ?? '')) ||
+            ['run_every', 'set_volume', 'Sound', 'SoundEvent', 'pin_logo', 'pin_speaker'].includes(name ?? '')) ||
         (moduleName === 'microbit.audio' && name === 'SoundEffect') ||
         (moduleName === 'neopixel' && ['fill', 'write'].includes(name ?? ''))
     );
@@ -134,6 +134,11 @@ export function maybeAddMicrobitVersionWarning(
         if (isFunction(type) && type.boundToType) {
             const className = type.boundToType?.details.name;
             addClassMethodVersionWarning(addDiagnostic, name, className, node);
+            return;
+        }
+
+        if (isClass(type) && type.includeSubclasses) {
+            // Bail. Example, we only want to warn for microbit.Sound once and not again for microbit.Sound.GIGGLE.
             return;
         }
 
