@@ -58,6 +58,7 @@
         "memberSet": "\"{type}\" 유형으로 \"{name}\" 멤버를 할당할 수 없음",
         "moduleNotCallable": "모듈을 호출할 수 없음",
         "moduleUnknownMember": "\"{name}\"(이)가 \"{module}\"의 기존 멤버가 아님",
+        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
         "nonDefaultAfterDefault": "기본값 인자 뒤에 기본값이 아닌 인자가 입력됨",
         "noOverload": "인자가 매개변수 유형과 일치하지 않음",
         "objectNotCallable": "개체를 호출할 수 없음",

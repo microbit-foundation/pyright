@@ -58,6 +58,7 @@
         "memberSet": "Kan lid \"{name}\" niet toewijzen voor type \"{type}\"",
         "moduleNotCallable": "Module kan niet aangeroepen worden",
         "moduleUnknownMember": "\"{name}\" is geen bekend lid van module \"{module}\"",
+        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
         "nonDefaultAfterDefault": "Niet standaard argument volgt het standaard argument",
         "noOverload": "Argumenten komen niet overeen met parametertypes",
         "objectNotCallable": "Object kan niet aangeroepen worden",

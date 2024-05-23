@@ -58,6 +58,7 @@
         "memberSet": "无法为类型 “{type}” 分配成员 “{name}”",
         "moduleNotCallable": "模块不可调用",
         "moduleUnknownMember": "\"{name}\" 不是模块 \"{module}\" 的已知成员",
+        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
         "nonDefaultAfterDefault": "默认参数之后为非默认参数",
         "noOverload": "参数与参数类型不匹配",
         "objectNotCallable": "对象不可调用",

@@ -58,6 +58,7 @@
         "memberSet": "無法指派類型 \"{type}\" 的成員 \"{name}\"",
         "moduleNotCallable": "模組不可呼叫",
         "moduleUnknownMember": "\"{name}\" 不是模組 \"{module}\" 的已知成員",
+        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
         "nonDefaultAfterDefault": "非預設引數接在預設引數後面",
         "noOverload": "引數與參數類型不相符",
         "objectNotCallable": "物件不可呼叫",

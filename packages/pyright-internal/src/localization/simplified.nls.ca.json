@@ -58,6 +58,7 @@
         "memberSet": "No es pot assignar el membre \"{name}\" per al tipus \"{type}\"",
         "moduleNotCallable": "El mòdul no es pot cridar",
         "moduleUnknownMember": "\"{name}\" no és un membre conegut del mòdul \"{module}\"",
+        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
         "nonDefaultAfterDefault": "L'argument no predeterminat va després de l'argument predeterminat",
         "noOverload": "Els arguments no coincideixen amb els tipus de paràmetres",
         "objectNotCallable": "L'objecte no es pot cridar",

@@ -58,6 +58,7 @@
         "memberSet": "Kann Mitglied \"{name}\" nicht für Typ \"{type}\" zuweisen",
         "moduleNotCallable": "Modul ist nicht abrufbar",
         "moduleUnknownMember": "„{name}“ ist kein bekanntes Mitglied des Moduls „{module}“",
+        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
         "nonDefaultAfterDefault": "Nicht-Standard Argument folgt Standardargument",
         "noOverload": "Argumente stimmen nicht mit Parametertypen überein",
         "objectNotCallable": "Objekt ist nicht abrufbar",

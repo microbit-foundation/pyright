@@ -58,6 +58,7 @@
         "memberSet": "No se puede asignar el miembro \"{name}\" para el tipo \"{type}\"",
         "moduleNotCallable": "No se puede llamar al módulo",
         "moduleUnknownMember": "\"{name}\" no es un miembro conocido del módulo \"{module}\"",
+        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
         "nonDefaultAfterDefault": "Argumento no por defecto después de argumento por defecto",
         "noOverload": "Los tipos de los argumentos no coinciden con los tipos de los parámetros",
         "objectNotCallable": "No se puede llamar al objeto",

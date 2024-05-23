@@ -1258,8 +1258,7 @@ export class Checker extends ParseTreeWalker {
         if (!node.isWildcardImport) {
             node.imports.forEach((importAs) => {
                 this._evaluator.evaluateTypesForStatement(importAs);
-
-                this._reportMicrobitV2Name(importAs.name);
+                this._reportMicrobitV2Name(importAs.alias ?? importAs.name);
             });
         } else {
             const importInfo = AnalyzerNodeInfo.getImportInfo(node.module);
@@ -4946,6 +4945,13 @@ export class Checker extends ParseTreeWalker {
     }
 
     private _reportMicrobitV2Name(node: NameNode) {
+        if (this._fileInfo.isStubFile) {
+            return;
+        }
+        const type = this._evaluator.getType(node);
+        if (!type || type.category === TypeCategory.Unknown) {
+            return;
+        }
         const declarations = this._evaluator.getDeclarationsForNameNode(node);
         let primaryDeclaration =
             declarations && declarations.length > 0 ? declarations[declarations.length - 1] : undefined;
@@ -4980,8 +4986,7 @@ export class Checker extends ParseTreeWalker {
             }
         }
 
-        const type = this._evaluator.getType(node);
-        if (type && isModule(type)) {
+        if (isModule(type)) {
             return this._reportMicrobitVersionApiUnsupportedCheck(node, type.moduleName);
         }
     }
