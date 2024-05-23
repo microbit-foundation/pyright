@@ -4966,7 +4966,7 @@ export class Checker extends ParseTreeWalker {
         }
         if (primaryDeclaration && primaryDeclaration.node !== node) {
             switch (primaryDeclaration.type) {
-                case DeclarationType.Class /* fallthrough */:
+                case DeclarationType.Class:
                     return this._reportMicrobitVersionApiUnsupportedCheck(
                         node,
                         primaryDeclaration.moduleName,
