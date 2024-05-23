@@ -4944,8 +4944,8 @@ export class Checker extends ParseTreeWalker {
         });
     }
 
-    private _reportMicrobitV2Name(node: NameNode) {
-        if (this._fileInfo.isStubFile) {
+    private _reportMicrobitV2Name(node?: NameNode) {
+        if (!node || this._fileInfo.isStubFile) {
             return;
         }
         const type = this._evaluator.getType(node);
