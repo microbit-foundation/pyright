@@ -754,7 +754,7 @@
                         "reportMicrobitVersionApiUnsupported": {
                             "type": "string",
                             "description": "Controls reporting of micro:bit API use that isn't available on all devices",
-                            "default": "none",
+                            "default": "warning",
                             "enum": [
                                 "none",
                                 "information",

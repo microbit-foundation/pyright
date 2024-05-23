@@ -535,6 +535,11 @@ export class TestState {
 
         // organize things per file
         const resultPerFile = this._getDiagnosticsPerFile();
+        Array.from(resultPerFile.keys()).forEach((k) => {
+            resultPerFile.get(k)?.warnings.forEach((e) => {
+                console.log(k, e);
+            });
+        });
         const rangePerFile = this.createMultiMap<Range>(this.getRanges(), (r) => r.fileName);
 
         if (!hasDiagnostics(resultPerFile) && rangePerFile.size === 0) {

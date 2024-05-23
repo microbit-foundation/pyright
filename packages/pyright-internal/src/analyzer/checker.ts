@@ -4944,6 +4944,7 @@ export class Checker extends ParseTreeWalker {
         });
     }
 
+    // This message omits the class name which is confusing
     private _reportMicrobitV2Name(node?: NameNode) {
         if (!node || this._fileInfo.isStubFile) {
             return;
@@ -4966,13 +4967,25 @@ export class Checker extends ParseTreeWalker {
         }
         if (primaryDeclaration && primaryDeclaration.node !== node) {
             switch (primaryDeclaration.type) {
-                case DeclarationType.Class: /* fallthrough */
-                case DeclarationType.Function:
+                case DeclarationType.Class /* fallthrough */:
                     return this._reportMicrobitVersionApiUnsupportedCheck(
                         node,
                         primaryDeclaration.moduleName,
                         primaryDeclaration.node.name.value
                     );
+                case DeclarationType.Function: {
+                    const name = primaryDeclaration.node.name.value;
+                    const className = primaryDeclaration.isMethod
+                        ? ParseTreeUtils.getEnclosingClass(primaryDeclaration.node)?.name.value
+                        : undefined;
+                    const dottedName = className ? `${className}.${name}` : name;
+                    return this._reportMicrobitVersionApiUnsupportedCheck(
+                        node,
+                        primaryDeclaration.moduleName,
+                        dottedName,
+                        primaryDeclaration.isMethod ? dottedName : undefined
+                    );
+                }
                 case DeclarationType.Variable:
                     if (primaryDeclaration.node.nodeType === ParseNodeType.Name) {
                         return this._reportMicrobitVersionApiUnsupportedCheck(
@@ -4990,12 +5003,17 @@ export class Checker extends ParseTreeWalker {
         }
     }
 
-    private _reportMicrobitVersionApiUnsupportedCheck(node: NameNode, moduleName: string, name?: string) {
+    private _reportMicrobitVersionApiUnsupportedCheck(
+        node: NameNode,
+        moduleName: string,
+        name?: string,
+        nameForError?: string
+    ) {
         const fullName = moduleName + (name ? '.' + name : '');
         if (this._microbitV2OnlyNames.has(moduleName)) {
-            this._reportMicrobitVersionApiUnsupportedDiagnostic(node, fullName);
+            this._reportMicrobitVersionApiUnsupportedDiagnostic(node, nameForError ?? fullName);
         } else if (this._microbitV2OnlyNames.has(fullName)) {
-            this._reportMicrobitVersionApiUnsupportedDiagnostic(node, fullName);
+            this._reportMicrobitVersionApiUnsupportedDiagnostic(node, nameForError ?? fullName);
         }
     }
 
@@ -5011,11 +5029,10 @@ export class Checker extends ParseTreeWalker {
         );
     }
 
+    // Potentially we could move these to decorators if it didn't impact users
     private _microbitV2OnlyNames = new Set([
-        'log',
         'microbit.microphone',
         'microbit.speaker',
-        'power',
         'microbit.run_every',
         'microbit.set_volume',
         'microbit.Sound',
@@ -5023,7 +5040,14 @@ export class Checker extends ParseTreeWalker {
         'microbit.pin_logo',
         'microbit.pin_speaker',
         'microbit.audio.SoundEffect',
-        'neopixel.fill',
-        'neopixel.write',
+
+        'log',
+
+        'power',
+
+        'audio.SoundEffect',
+
+        'neopixel.NeoPixel.fill',
+        'neopixel.NeoPixel.write',
     ]);
 }
