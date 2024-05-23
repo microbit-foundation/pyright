@@ -1210,6 +1210,7 @@ export class Checker extends ParseTreeWalker {
     override visitName(node: NameNode) {
         // Determine if we should log information about private usage.
         this._conditionallyReportPrivateUsage(node);
+        this._reportMicrobitVersionApiUnsupported(node);
 
         // Determine if the name is possibly unbound.
         if (!this._isUnboundCheckSuppressed) {
@@ -1238,6 +1239,7 @@ export class Checker extends ParseTreeWalker {
     override visitMemberAccess(node: MemberAccessNode) {
         this._evaluator.getType(node);
         this._conditionallyReportPrivateUsage(node.memberName);
+        this._reportMicrobitVersionApiUnsupported(node.memberName);
 
         // Walk the leftExpression but not the memberName.
         this.walk(node.leftExpression);
@@ -1247,6 +1249,8 @@ export class Checker extends ParseTreeWalker {
 
     override visitImportAs(node: ImportAsNode): boolean {
         this._evaluator.evaluateTypesForStatement(node);
+        this._reportMicrobitVersionApiUnsupported(node.module.nameParts[0]);
+
         return false;
     }
 
@@ -1254,6 +1258,7 @@ export class Checker extends ParseTreeWalker {
         if (!node.isWildcardImport) {
             node.imports.forEach((importAs) => {
                 this._evaluator.evaluateTypesForStatement(importAs);
+                this._reportMicrobitVersionApiUnsupported(importAs.alias ?? importAs.name);
             });
         } else {
             const importInfo = AnalyzerNodeInfo.getImportInfo(node.module);
@@ -1272,6 +1277,7 @@ export class Checker extends ParseTreeWalker {
                 );
             }
         }
+        this._reportMicrobitVersionApiUnsupported(node.module.nameParts[0]);
 
         return false;
     }
@@ -4937,4 +4943,110 @@ export class Checker extends ParseTreeWalker {
             }
         });
     }
+
+    private _reportMicrobitVersionApiUnsupported(node?: NameNode) {
+        if (!node || this._fileInfo.isStubFile) {
+            return;
+        }
+        const type = this._evaluator.getType(node);
+        if (!type || type.category === TypeCategory.Unknown) {
+            return;
+        }
+        const declarations = this._evaluator.getDeclarationsForNameNode(node);
+        let primaryDeclaration =
+            declarations && declarations.length > 0 ? declarations[declarations.length - 1] : undefined;
+        if (!primaryDeclaration || primaryDeclaration.node === node) {
+            return;
+        }
+        if (primaryDeclaration.type === DeclarationType.Alias) {
+            primaryDeclaration = this._evaluator.resolveAliasDeclaration(
+                primaryDeclaration,
+                /* resolveLocalNames */ true
+            );
+        }
+        if (primaryDeclaration && primaryDeclaration.node !== node) {
+            switch (primaryDeclaration.type) {
+                case DeclarationType.Class:
+                    return this._reportMicrobitVersionApiUnsupportedCheck(
+                        node,
+                        primaryDeclaration.moduleName,
+                        primaryDeclaration.node.name.value
+                    );
+                case DeclarationType.Function: {
+                    const name = primaryDeclaration.node.name.value;
+                    const className = primaryDeclaration.isMethod
+                        ? ParseTreeUtils.getEnclosingClass(primaryDeclaration.node)?.name.value
+                        : undefined;
+                    const dottedName = className ? `${className}.${name}` : name;
+                    return this._reportMicrobitVersionApiUnsupportedCheck(
+                        node,
+                        primaryDeclaration.moduleName,
+                        dottedName,
+                        primaryDeclaration.isMethod ? dottedName : undefined
+                    );
+                }
+                case DeclarationType.Variable:
+                    if (primaryDeclaration.node.nodeType === ParseNodeType.Name) {
+                        return this._reportMicrobitVersionApiUnsupportedCheck(
+                            node,
+                            primaryDeclaration.moduleName,
+                            primaryDeclaration.node.value
+                        );
+                    }
+                    break;
+            }
+        }
+
+        if (isModule(type)) {
+            return this._reportMicrobitVersionApiUnsupportedCheck(node, type.moduleName);
+        }
+    }
+
+    private _reportMicrobitVersionApiUnsupportedCheck(
+        node: NameNode,
+        moduleName: string,
+        name?: string,
+        nameForError?: string
+    ) {
+        const fullName = moduleName + (name ? '.' + name : '');
+        if (this._microbitV2OnlyNames.has(moduleName)) {
+            this._reportMicrobitVersionApiUnsupportedDiagnostic(node, nameForError ?? fullName);
+        } else if (this._microbitV2OnlyNames.has(fullName)) {
+            this._reportMicrobitVersionApiUnsupportedDiagnostic(node, nameForError ?? fullName);
+        }
+    }
+
+    private _reportMicrobitVersionApiUnsupportedDiagnostic(node: NameNode, name: string): void {
+        this._evaluator.addDiagnostic(
+            this._fileInfo.diagnosticRuleSet.reportMicrobitVersionApiUnsupported,
+            DiagnosticRule.reportMicrobitVersionApiUnsupported,
+            Localizer.Diagnostic.microbitVersionApiUnsupported().format({
+                name: name.replace(/^microbit\./, ''),
+                device: 'micro:bit V1',
+            }),
+            node
+        );
+    }
+
+    // Potentially we could move these to decorators if it didn't impact users
+    private _microbitV2OnlyNames = new Set([
+        'microbit.microphone',
+        'microbit.speaker',
+        'microbit.run_every',
+        'microbit.set_volume',
+        'microbit.Sound',
+        'microbit.SoundEvent',
+        'microbit.pin_logo',
+        'microbit.pin_speaker',
+        'microbit.audio.SoundEffect',
+
+        'log',
+
+        'power',
+
+        'audio.SoundEffect',
+
+        'neopixel.NeoPixel.fill',
+        'neopixel.NeoPixel.write',
+    ]);
 }

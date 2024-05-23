@@ -285,6 +285,9 @@ export interface DiagnosticRuleSet {
     // Report cases where the a "match" statement is not exhaustive in
     // covering all possible cases.
     reportMatchNotExhaustive: DiagnosticLevel;
+
+    // Report micro:bit V2 API use.
+    reportMicrobitVersionApiUnsupported: DiagnosticLevel;
 }
 
 export function cloneDiagnosticRuleSet(diagSettings: DiagnosticRuleSet): DiagnosticRuleSet {
@@ -374,6 +377,7 @@ export function getDiagLevelDiagnosticRules() {
         DiagnosticRule.reportUnusedCoroutine,
         DiagnosticRule.reportUnnecessaryTypeIgnoreComment,
         DiagnosticRule.reportMatchNotExhaustive,
+        DiagnosticRule.reportMicrobitVersionApiUnsupported,
     ];
 }
 
@@ -453,6 +457,7 @@ export function getOffDiagnosticRuleSet(): DiagnosticRuleSet {
         reportUnusedCoroutine: 'none',
         reportUnnecessaryTypeIgnoreComment: 'none',
         reportMatchNotExhaustive: 'none',
+        reportMicrobitVersionApiUnsupported: 'none',
     };
 
     return diagSettings;
@@ -528,6 +533,7 @@ export function getBasicDiagnosticRuleSet(): DiagnosticRuleSet {
         reportUnusedCoroutine: 'error',
         reportUnnecessaryTypeIgnoreComment: 'none',
         reportMatchNotExhaustive: 'none',
+        reportMicrobitVersionApiUnsupported: 'warning',
     };
 
     return diagSettings;
@@ -603,6 +609,7 @@ export function getStrictDiagnosticRuleSet(): DiagnosticRuleSet {
         reportUnusedCoroutine: 'error',
         reportUnnecessaryTypeIgnoreComment: 'none',
         reportMatchNotExhaustive: 'error',
+        reportMicrobitVersionApiUnsupported: 'warning',
     };
 
     return diagSettings;

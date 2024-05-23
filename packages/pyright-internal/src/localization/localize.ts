@@ -521,6 +521,10 @@ export namespace Localizer {
             );
         export const methodReturnsNonObject = () =>
             new ParameterizedString<{ name: string }>(getRawString('Diagnostic.methodReturnsNonObject'));
+        export const microbitVersionApiUnsupported = () =>
+            new ParameterizedString<{ name: string; device: string }>(
+                getRawString('Diagnostic.microbitVersionApiUnsupported')
+            );
         export const missingProtocolMembers = () => getRawString('Diagnostic.missingProtocolMembers');
         export const missingSuperCall = () =>
             new ParameterizedString<{ methodName: string }>(getRawString('Diagnostic.missingSuperCall'));

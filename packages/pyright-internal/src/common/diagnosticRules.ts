@@ -75,4 +75,6 @@ export enum DiagnosticRule {
     reportUnusedCoroutine = 'reportUnusedCoroutine',
     reportUnnecessaryTypeIgnoreComment = 'reportUnnecessaryTypeIgnoreComment',
     reportMatchNotExhaustive = 'reportMatchNotExhaustive',
+
+    reportMicrobitVersionApiUnsupported = 'reportMicrobitVersionApiUnsupported',
 }

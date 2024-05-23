@@ -235,6 +235,7 @@
         "moduleAsType": "Module cannot be used as a type",
         "moduleNotCallable": "Module is not callable",
         "moduleUnknownMember": "\"{name}\" is not a known member of module \"{module}\"",
+        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
         "namedExceptAfterCatchAll": "A named except clause cannot appear after catch-all except clause",
         "namedParamAfterParamSpecArgs": "Keyword parameter \"{name}\" cannot appear in signature after ParamSpec args parameter",
         "namedTupleEmptyName": "Names within a named tuple cannot be empty",
