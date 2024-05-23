@@ -483,7 +483,7 @@
       "$id": "#/properties/reportMicrobitVersionApiUnsupported",
       "$ref": "#/definitions/diagnostic",
       "title": "Controls reporting of micro:bit API use that isn't available on all devices",
-      "default": "none"
+      "default": "warning"
     },
     "extraPaths": {
       "$id": "#/properties/extraPaths",
