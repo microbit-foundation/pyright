@@ -1210,7 +1210,7 @@ export class Checker extends ParseTreeWalker {
     override visitName(node: NameNode) {
         // Determine if we should log information about private usage.
         this._conditionallyReportPrivateUsage(node);
-        this._reportMicrobitV2Name(node);
+        this._reportMicrobitVersionApiUnsupported(node);
 
         // Determine if the name is possibly unbound.
         if (!this._isUnboundCheckSuppressed) {
@@ -1239,7 +1239,7 @@ export class Checker extends ParseTreeWalker {
     override visitMemberAccess(node: MemberAccessNode) {
         this._evaluator.getType(node);
         this._conditionallyReportPrivateUsage(node.memberName);
-        this._reportMicrobitV2Name(node.memberName);
+        this._reportMicrobitVersionApiUnsupported(node.memberName);
 
         // Walk the leftExpression but not the memberName.
         this.walk(node.leftExpression);
@@ -1249,7 +1249,7 @@ export class Checker extends ParseTreeWalker {
 
     override visitImportAs(node: ImportAsNode): boolean {
         this._evaluator.evaluateTypesForStatement(node);
-        this._reportMicrobitV2Name(node.module.nameParts[0]);
+        this._reportMicrobitVersionApiUnsupported(node.module.nameParts[0]);
 
         return false;
     }
@@ -1258,7 +1258,7 @@ export class Checker extends ParseTreeWalker {
         if (!node.isWildcardImport) {
             node.imports.forEach((importAs) => {
                 this._evaluator.evaluateTypesForStatement(importAs);
-                this._reportMicrobitV2Name(importAs.alias ?? importAs.name);
+                this._reportMicrobitVersionApiUnsupported(importAs.alias ?? importAs.name);
             });
         } else {
             const importInfo = AnalyzerNodeInfo.getImportInfo(node.module);
@@ -1277,7 +1277,7 @@ export class Checker extends ParseTreeWalker {
                 );
             }
         }
-        this._reportMicrobitV2Name(node.module.nameParts[0]);
+        this._reportMicrobitVersionApiUnsupported(node.module.nameParts[0]);
 
         return false;
     }
@@ -4944,8 +4944,7 @@ export class Checker extends ParseTreeWalker {
         });
     }
 
-    // This message omits the class name which is confusing
-    private _reportMicrobitV2Name(node?: NameNode) {
+    private _reportMicrobitVersionApiUnsupported(node?: NameNode) {
         if (!node || this._fileInfo.isStubFile) {
             return;
         }
