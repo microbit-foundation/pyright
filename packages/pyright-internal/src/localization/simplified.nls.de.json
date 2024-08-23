@@ -16,7 +16,7 @@
         "constructorNoArgs": "Keine Argumente für \"{type}\" Konstruktor erwartet",
         "continueOutsideLoop": "\"continue\" kann nur innerhalb einer \"while\" oder \"for\" Schleife verwendet werden",
         "delTargetExpr": "Ausdruck kann nicht gelöscht werden",
-        "duplicateParam": "Duplizierter Parameter \"{name}\"",
+        "duplicateParam": "Doppelter Parameter „{name}“",
         "expectedAssignRightHandExpr": "Auf der rechten Seite von \"=\" wird ein Ausdruck erwartet",
         "expectedBinaryRightHandExpr": "Auf der rechten Seite vom Operator wird ein Ausdruck erwartet",
         "expectedClassName": "Klassenname fehlt",
