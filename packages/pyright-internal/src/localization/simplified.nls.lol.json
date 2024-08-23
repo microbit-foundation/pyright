@@ -58,7 +58,7 @@
         "memberSet": "crwdns331292:0{name}crwdnd331292:0{type}crwdne331292:0",
         "moduleNotCallable": "crwdns331294:0crwdne331294:0",
         "moduleUnknownMember": "crwdns331296:0{name}crwdnd331296:0{module}crwdne331296:0",
-        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
+        "microbitVersionApiUnsupported": "crwdns360366:0{name}crwdnd360366:0{device}crwdne360366:0",
         "nonDefaultAfterDefault": "crwdns331298:0crwdne331298:0",
         "noOverload": "crwdns331300:0crwdne331300:0",
         "objectNotCallable": "crwdns331302:0crwdne331302:0",
