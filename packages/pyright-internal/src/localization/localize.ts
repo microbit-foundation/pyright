@@ -159,7 +159,7 @@ async function loadStringsFromJsonFile(locale: string): Promise<StringLookupMap 
         case 'ko':
             return (await import(/* webpackChunkName: "ko" */ './simplified.nls.ko.json')).default;
         case 'pl':
-            return (await import(/* webpackChunkName: "nl" */ './simplified.nls.pl.json')).default;
+            return (await import(/* webpackChunkName: "pl" */ './simplified.nls.pl.json')).default;
         case 'nl':
             return (await import(/* webpackChunkName: "nl" */ './simplified.nls.nl.json')).default;
         case 'zh-cn':
