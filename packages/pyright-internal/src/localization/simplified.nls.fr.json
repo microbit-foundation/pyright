@@ -58,7 +58,7 @@
         "memberSet": "Impossible d'affecter le membre \"{name}\" pour le type \"{type}\"",
         "moduleNotCallable": "Le module n'est pas appelable",
         "moduleUnknownMember": "\"{name}\" n'est pas un membre connu du module \"{module}\"",
-        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
+        "microbitVersionApiUnsupported": "\"{name}\" n'est pas pris en charge sur un(e) {device}",
         "nonDefaultAfterDefault": "Argument sans valeur par défaut suit un argument ayant une valeur par défaut",
         "noOverload": "Les arguments ne correspondent pas aux types des paramètres",
         "objectNotCallable": "L'objet n'est pas appelable",
