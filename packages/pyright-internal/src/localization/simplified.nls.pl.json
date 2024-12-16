@@ -58,7 +58,7 @@
         "memberSet": "Nie można przypisać członka \"{name}\" dla typu \"{type}\"",
         "moduleNotCallable": "Moduł nie jest wywoływalny",
         "moduleUnknownMember": "\"{name}\" nie jest znanym członkiem modułu \"{module}\"",
-        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
+        "microbitVersionApiUnsupported": "\"{name}\" nie jest obsługiwane na {device}",
         "nonDefaultAfterDefault": "Argument niedomyślny bastępuje po domyślnym argumentem",
         "noOverload": "Argumenty nie zgadzaj się z typem parametrów",
         "objectNotCallable": "Obiekt nie jest wywoływalny",

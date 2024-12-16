@@ -58,7 +58,7 @@
         "memberSet": "型「{type}」の メンバー「{name}」 を割り当てできません",
         "moduleNotCallable": "モジュールは呼び出しできません",
         "moduleUnknownMember": "「{name}」はモジュール「{module}」の既知のメンバではありません",
-        "microbitVersionApiUnsupported": "\"{name}\" is not supported on a {device}",
+        "microbitVersionApiUnsupported": "\"{name}\" は {device} でサポートされていません",
         "nonDefaultAfterDefault": "デフォルトでない引数はデフォルト引数の後に続きます",
         "noOverload": "引数がパラメータ型と一致しません",
         "objectNotCallable": "オブジェクトは呼び出しできません",
