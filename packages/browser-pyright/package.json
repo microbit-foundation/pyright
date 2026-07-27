@@ -9,7 +9,8 @@
     },
     "publisher": "Microsoft Corporation",
     "engines": {
-        "node": ">=12.0.0"
+        "node": ">=24.0.0",
+        "npm": ">=11.18.0"
     },
     "repository": {
         "type": "git",
@@ -29,7 +30,7 @@
         "shx": "^0.3.3",
         "ts-loader": "^9.2.3",
         "typescript": "~4.3.5",
-        "webpack": "^5.44.0",
+        "webpack": "^5.76.0",
         "webpack-cli": "^4.7.2"
     },
     "files": [
