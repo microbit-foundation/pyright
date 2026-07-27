@@ -4,6 +4,9 @@
     "description": "VS Code static type checking for Python",
     "version": "1.1.225",
     "private": true,
+    "allowScripts": {
+        "keytar": false
+    },
     "license": "MIT",
     "author": {
         "name": "Microsoft Corporation"
