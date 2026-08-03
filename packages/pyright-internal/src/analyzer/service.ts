@@ -352,6 +352,10 @@ export class AnalyzerService {
         return this._program.getApiDocs(modules, documentationFormat);
     }
 
+    getJacdacRoles(path: string) {
+        return this._program.getJacdacRoles(path);
+    }
+
     getHoverForPosition(
         filePath: string,
         position: Position,

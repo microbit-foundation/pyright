@@ -10,6 +10,7 @@ import { AnalysisResults } from 'pyright-internal/analyzer/analysis';
 import { ImportResolver } from 'pyright-internal/analyzer/importResolver';
 import { isPythonBinary } from 'pyright-internal/analyzer/pythonPathUtils';
 import { apiDocsRequestType } from 'pyright-internal/apidocsProtocol';
+import { jacdacRolesRequestType } from 'pyright-internal/jacdacRolesProtocol';
 import { BackgroundAnalysisBase, BackgroundAnalysisRunnerBase } from 'pyright-internal/backgroundAnalysisBase';
 import { InitializationData } from 'pyright-internal/backgroundThreadBase';
 import { CommandController } from 'pyright-internal/commands/commandController';
@@ -113,6 +114,10 @@ export class PyrightServer extends LanguageServerBase {
                 params.modules,
                 params.documentationFormat ?? [MarkupKind.PlainText]
             );
+        });
+        this._connection.onRequest(jacdacRolesRequestType, (params) => {
+            const service = this._workspaceMap.getWorkspaceForFile(this, params.path);
+            return service.serviceInstance.getJacdacRoles(params.path);
         });
     }
 

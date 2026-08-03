@@ -20,6 +20,7 @@ import {
 } from 'vscode-languageserver-types';
 
 import { ApiDocsEntry, ApiDocsResponse } from '../apidocsProtocol';
+import { JacdacRolesResponse } from '../jacdacRolesProtocol';
 import { OperationCanceledException, throwIfCancellationRequested } from '../common/cancellationUtils';
 import { removeArrayElements } from '../common/collectionUtils';
 import { ConfigOptions, ExecutionEnvironment } from '../common/configOptions';
@@ -74,6 +75,7 @@ import { DeclarationType, isAliasDeclaration, VariableDeclaration } from './decl
 import { convertDocStringToMarkdown, convertDocStringToPlainText } from './docStringConversion';
 import { ImportedModuleDescriptor, ImportResolver } from './importResolver';
 import { ImportResult, ImportType } from './importResult';
+import { extractJacdacRoles } from './jacdacRoles';
 import { findNodeByOffset, getDocString, printExpression, PrintExpressionFlags } from './parseTreeUtils';
 import { Scope } from './scope';
 import { getScopeForNode } from './scopeUtils';
@@ -2042,6 +2044,16 @@ export class Program {
         this._bindFile(sourceFileInfo);
 
         return sourceFileInfo.sourceFile.performQuickAction(command, args, token);
+    }
+
+    getJacdacRoles(path: string): JacdacRolesResponse {
+        const sourceFile = this.getBoundSourceFile(path);
+        const parseResults = sourceFile?.getParseResults();
+        if (!parseResults) {
+            return { roles: [] };
+        }
+        const evaluator = this._evaluator || this._createNewEvaluator();
+        return { roles: extractJacdacRoles(parseResults.parseTree, evaluator) };
     }
 
     getApiDocs(modules: string[], documentationFormat: MarkupKind[]): ApiDocsResponse {

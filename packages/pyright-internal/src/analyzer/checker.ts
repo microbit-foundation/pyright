@@ -86,6 +86,7 @@ import { Declaration, DeclarationType } from './declaration';
 import { isExplicitTypeAliasDeclaration, isFinalVariableDeclaration } from './declarationUtils';
 import { ImportType } from './importResult';
 import { getTopLevelImports } from './importStatementUtils';
+import { jacdacRoleFromCall, reservedCharsInName } from './jacdacRoles';
 import * as ParseTreeUtils from './parseTreeUtils';
 import { ParseTreeWalker } from './parseTreeWalker';
 import { validateClassPattern } from './patternMatching';
@@ -668,6 +669,8 @@ export class Checker extends ParseTreeWalker {
         this._validateIsInstanceCall(node);
 
         this._validateIllegalDefaultParamInitializer(node);
+
+        this._reportJacdacReservedRoleChar(node);
 
         if (
             this._fileInfo.diagnosticRuleSet.reportUnusedCallResult !== 'none' ||
@@ -4942,6 +4945,31 @@ export class Checker extends ParseTreeWalker {
                 }
             }
         });
+    }
+
+    // Warn (not error) when a Jacdac role name uses a character reserved by
+    // Jacdac's role syntax. It's advisory: advanced users may use the syntax
+    // deliberately, but beginners should avoid it. The callee is confirmed via
+    // the evaluator (see jacdacRoleFromCall), so aliases match and unrelated
+    // same-named calls are ignored.
+    private _reportJacdacReservedRoleChar(node: CallNode) {
+        if (this._fileInfo.isStubFile) {
+            return;
+        }
+        const role = jacdacRoleFromCall(this._evaluator, node);
+        if (!role) {
+            return;
+        }
+        const reserved = reservedCharsInName(role.name);
+        if (reserved.length === 0) {
+            return;
+        }
+        const quoted = reserved.map((c) => `'${c}'`).join(', ');
+        const message =
+            reserved.length === 1
+                ? `${quoted} has special meaning in Jacdac. Avoid using it if you are unsure what it does.`
+                : `${quoted} have special meaning in Jacdac. Avoid using them if you are unsure what they do.`;
+        this._evaluator.addDiagnostic('warning', 'reportJacdacReservedRoleChar', message, role.node);
     }
 
     private _reportMicrobitVersionApiUnsupported(node?: NameNode) {
