@@ -4,6 +4,9 @@
     "description": "VS Code static type checking for Python",
     "version": "1.1.225",
     "private": true,
+    "allowScripts": {
+        "keytar": false
+    },
     "license": "MIT",
     "author": {
         "name": "Microsoft Corporation"
@@ -14,7 +17,9 @@
         "url": "https://github.com/Microsoft/pyright"
     },
     "engines": {
-        "vscode": "^1.63.1"
+        "vscode": "^1.63.1",
+        "node": ">=24.0.0",
+        "npm": ">=11.18.0"
     },
     "keywords": [
         "python"
@@ -859,7 +864,7 @@
         "ts-loader": "^9.2.6",
         "typescript": "~4.4.4",
         "vsce": "^2.6.4",
-        "webpack": "^5.68.0",
+        "webpack": "^5.76.0",
         "webpack-cli": "^4.9.2"
     }
 }
