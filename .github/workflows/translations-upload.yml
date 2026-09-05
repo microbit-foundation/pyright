@@ -1,0 +1,34 @@
+name: translations-upload
+
+# Replaces the English simplified error messages in Crowdin. Run by hand when
+# the copy is ready to translate; tick "keep translations" for a correction
+# translators need not revisit.
+on:
+  workflow_dispatch:
+    inputs:
+      keep_translations:
+        description: Keep translations of strings whose English text changed
+        type: boolean
+        default: false
+      dry_run:
+        description: Show what would change without uploading
+        type: boolean
+        default: false
+
+concurrency:
+  group: translations-upload
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "24.x"
+      - run: npx --yes --package @microbit/i18n-tools@^0.2.0 microbit-i18n upload ${{ inputs.keep_translations && '--keep-translations' || '' }} ${{ inputs.dry_run && '--dry-run' || '' }}
+        env:
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.MICROBIT_ORG_CROWDIN_PERSONAL_ACCESS_TOKEN }}
