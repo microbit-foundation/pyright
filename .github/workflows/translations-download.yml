@@ -25,8 +25,11 @@ jobs:
           node-version: "24.x"
       - uses: microbit-foundation/translations-sync-action@v1
         with:
-          # The fork does not install the tool; npx fetches it.
-          download: npx --yes --package @microbit/i18n-tools@^0.2.0 microbit-i18n download
+          # The fork does not install the tool; npx fetches it. npm exec applies
+          # .npmrc's min-release-age but not its exclusions, so with every
+          # release of the tool under a week old it finds no version to run
+          # unless the policy is lifted for this one command.
+          download: npx --yes --min-release-age=0 --package @microbit/i18n-tools@^0.2.0 microbit-i18n download
           app-id: ${{ secrets.I18N_APP_ID }}
           private-key: ${{ secrets.I18N_APP_PRIVATE_KEY }}
           body: >-

@@ -29,6 +29,7 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: "24.x"
-      - run: npx --yes --package @microbit/i18n-tools@^0.2.0 microbit-i18n upload ${{ inputs.keep_translations && '--keep-translations' || '' }} ${{ inputs.dry_run && '--dry-run' || '' }}
+      # --min-release-age=0: see translations-download.yml.
+      - run: npx --yes --min-release-age=0 --package @microbit/i18n-tools@^0.2.0 microbit-i18n upload ${{ inputs.keep_translations && '--keep-translations' || '' }} ${{ inputs.dry_run && '--dry-run' || '' }}
         env:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.MICROBIT_ORG_CROWDIN_PERSONAL_ACCESS_TOKEN }}
